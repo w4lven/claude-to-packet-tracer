@@ -358,3 +358,11 @@ license agreement and your local laws.
 ## License
 
 [MIT](LICENSE) © 2026 walven
+
+---
+
+<p align="center">
+  <img src="docs/screenshots/cisco-ritual.gif" alt="Cisco Packet Tracer ritualism meme" width="320"/>
+  <br>
+  <sub><em>now Claude can summon the topology for you</em></sub>
+</p>
