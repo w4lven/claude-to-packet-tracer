@@ -28,7 +28,7 @@ dependencies = [
     "pycryptoplus",
     # pycryptoplus still imports pkg_resources, which was removed from the
     # stdlib in Python 3.13 and now lives only in setuptools.
-    "setuptools",
+    "setuptools<81",
 ]
 
 [project.urls]
