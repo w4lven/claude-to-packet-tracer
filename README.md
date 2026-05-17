@@ -48,18 +48,27 @@ Python 3.10+. See [Compatibility](#compatibility) below.
 > ⚠️ **This project has only been tested on Packet Tracer 8.2.1.0118 (build
 > 8.2.1) on Windows with Python 3.10+.**
 > 
-> Other versions are **not validated**:
+> ### Packet Tracer versions
 > 
-> - **PT 8.0 / 8.1**: should work — the `.pkt` Twofish-EAX encryption and
->   the XML schema were stable across the 8.x line, but no testing has
->   been done.
+> - **PT 8.2.1.0118** (Windows) — **tested and confirmed working**.
+> - **PT 8.0 / 8.1**: should work — Twofish-EAX encryption and the XML
+>   schema were stable across the 8.x line, but no testing has been done.
 > - **PT 7.x and earlier**: very likely incompatible — older PT used a
->   plain XOR obfuscation (no Twofish), so the codec would need
+>   plain XOR obfuscation (no Twofish). The codec would need
 >   `decrypt_old` from [pka2xml](https://github.com/mircodz/pka2xml).
 > - **Future PT versions (8.3+, 9.x)**: untested. Cisco could change the
 >   encryption keys or the XML structure at any update.
 > 
-> If you try it on another version, please open an
+> ### Operating systems
+> 
+> - **Windows 11**: tested.
+> - **Linux / macOS**: the codec is pure Python (no OS-specific bindings)
+>   and reads `.pkt` files as raw bytes — it should work identically.
+>   The included `run_mcp.sh` is provided for Linux/macOS users, but the
+>   project has not been validated end-to-end on those platforms. Please
+>   open an issue if you try it.
+> 
+> If you try it on another version or OS, please open an
 > [issue](https://github.com/w4lven/claude-to-packet-tracer/issues) with
 > what worked / what broke so we can extend support.
 
@@ -75,8 +84,15 @@ python -m pip install -e .
 
 ### 2. Wire it into Claude Code
 
+**Windows**:
 ```powershell
 claude mcp add --scope user packet-tracer "C:\path\to\claude-to-packet-tracer\run_mcp.bat"
+```
+
+**Linux / macOS**:
+```bash
+chmod +x run_mcp.sh
+claude mcp add --scope user packet-tracer "/path/to/claude-to-packet-tracer/run_mcp.sh"
 ```
 
 Verify with:
@@ -127,6 +143,7 @@ Claude will call `pkt_open`, `pkt_list_devices`, `pkt_get_config`.
 | `pkt_remove_device(name)` | Remove a device and all its links |
 | `pkt_remove_link(a, port_a, b, port_b)` | Remove one specific link |
 | `pkt_new_from_template(template)` | Start a new in-memory topology |
+| `pkt_clear_topology()` | Remove all devices and links (keep metadata) (v0.4.1) |
 | `pkt_save(path?)` | Save back to `.pkt` |
 | `pkt_dump_xml(path)` | Debug: dump the raw decoded XML |
 

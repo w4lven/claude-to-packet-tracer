@@ -31,13 +31,7 @@ def main() -> int:
         return 1
 
     t = Topology.open(skeleton)
-    # Wipe existing topology
-    for d in list(t._devices_element()):
-        t._devices_element().remove(d)
-    links_el = t._links_element()
-    if links_el is not None:
-        for l in list(links_el):
-            links_el.remove(l)
+    t.clear()  # start from a blank workspace
 
     # Add devices
     t.add_device_by_model(library_dir, "ISR4331", "R1", x=200, y=200)

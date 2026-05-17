@@ -36,7 +36,7 @@ _state = _State()
 def _require() -> Topology:
     if _state.topology is None:
         raise RuntimeError(
-            "no topology open; call pkt_open(path) first"
+            "no topology open — call pkt_open(path) or pkt_new_from_template(path) first"
         )
     return _state.topology
 
@@ -254,6 +254,18 @@ def pkt_remove_link(from_device: str, from_port: str,
         return f"ERROR: {e}"
     return ("OK: link removed" if removed
             else "ERROR: no matching link found")
+
+
+@mcp.tool()
+def pkt_clear_topology() -> str:
+    """Remove all devices and links from the currently-open topology.
+
+    Useful after pkt_open / pkt_new_from_template to start from a blank
+    workspace while keeping the file format / PT version metadata intact.
+    """
+    t = _require()
+    rm_d, rm_l = t.clear()
+    return f"OK: removed {rm_d} device(s) and {rm_l} link(s)"
 
 
 @mcp.tool()

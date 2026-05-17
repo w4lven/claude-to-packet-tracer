@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-05-17
+
+### Added
+
+- `Topology.clear()` Python API and `pkt_clear_topology` MCP tool — remove
+  all devices and links while keeping metadata. The previous workflow
+  required reaching into private `_devices_element()` / `_links_element()`
+  helpers; now it's a one-liner.
+- `run_mcp.sh` launcher for Linux / macOS.
+- README: explicit Compatibility section covering both PT versions and
+  operating systems.
+
+### Changed
+
+- `_require()` error message now suggests both `pkt_open` and
+  `pkt_new_from_template` so first-time users know how to start.
+- Removed obsolete one-shot scripts (`scripts/test_edit.py`,
+  `scripts/test_roundtrip.py`) — superseded by the proper test suite.
+- Example `02_build_topology.py` now uses the public `t.clear()` API.
+
 ## [0.4.0] - 2026-05-17
 
 ### Added

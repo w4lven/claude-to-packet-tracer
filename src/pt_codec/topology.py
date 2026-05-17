@@ -69,6 +69,26 @@ class Topology:
     def to_xml(self) -> bytes:
         return etree.tostring(self._root, pretty_print=True, encoding="utf-8")
 
+    def clear(self) -> tuple[int, int]:
+        """Remove all devices and links. Returns (removed_devices, removed_links).
+
+        Use this after `Topology.open(template)` to start from a blank topology
+        while keeping the PT version, OPTIONS, and other metadata intact.
+        """
+        devs = self._devices_element()
+        rm_d = 0
+        if devs is not None:
+            for d in list(devs):
+                devs.remove(d)
+                rm_d += 1
+        links = self._links_element()
+        rm_l = 0
+        if links is not None:
+            for l in list(links):
+                links.remove(l)
+                rm_l += 1
+        return rm_d, rm_l
+
     # -------------------------------------------------------------- helpers
     def _devices_element(self):
         return self._root.find("NETWORK").find("DEVICES")
