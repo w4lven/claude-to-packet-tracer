@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="7960">IpPhone</TYPE>
+     <TYPE model="7960" customModel="">IpPhone</TYPE>
      <NAME translate="true">IP Phone0</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -77,7 +77,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:9650574242960916213</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:4408693525702244857</SAVE_REF_ID>
      <SYS_NAME>IP Phone</SYS_NAME>
      <RUNNINGCONFIG/>
      <STARTUPCONFIG/>
@@ -103,11 +103,11 @@
      </ALGORITHM_SETTINGS>
      <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
      <VLANS>
-      <VLAN name="default" rspan="0" number="1"/>
-      <VLAN name="fddi-default" rspan="0" number="1002"/>
-      <VLAN name="token-ring-default" rspan="0" number="1003"/>
-      <VLAN name="fddinet-default" rspan="0" number="1004"/>
-      <VLAN name="trnet-default" rspan="0" number="1005"/>
+      <VLAN name="default" number="1" rspan="0"/>
+      <VLAN name="fddi-default" number="1002" rspan="0"/>
+      <VLAN name="token-ring-default" number="1003" rspan="0"/>
+      <VLAN name="fddinet-default" number="1004" rspan="0"/>
+      <VLAN name="trnet-default" number="1005" rspan="0"/>
      </VLANS>
      <VTP>
       <DOMAIN_NAME/>
@@ -129,18 +129,18 @@
     </ENGINE>
     <WORKSPACE>
      <LOGICAL>
-      <X>641</X>
+      <X>640</X>
       <Y>614</Y>
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1219022216704</MEM_ADDR>
-      <DEV_ADDR>1218787654832</DEV_ADDR>
+      <MEM_ADDR>1824879243456</MEM_ADDR>
+      <DEV_ADDR>1824871870688</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{04bfae49-5566-478c-9ecb-cfa3d2364d01}</PHYSICAL>
      <PHYSICAL_CPUR>
-      <X_PN>0.172</X_PN>
-      <Y_PN>0.1075</Y_PN>
+      <X_PN>0.0998839</X_PN>
+      <Y_PN>0.100561</Y_PN>
       <X>344</X>
       <Y>215</Y>
       <SLOT>0</SLOT>

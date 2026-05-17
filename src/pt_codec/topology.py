@@ -523,6 +523,196 @@ class Topology:
 
         return self.get_pc_network(device_name)
 
+    # ---------------------------------------------------- wireless AP config
+    # PT internal enum values for wireless authentication / encryption,
+    # determined empirically from PT 8.2.1 saving an AccessPoint-PT.
+    _AUTH_MAP = {
+        "open": 0, "disabled": 0, "none": 0,
+        "wep": 1,
+        "wpa-psk": 2, "wpa_psk": 2,
+        "wpa": 3, "wpa-enterprise": 3, "wpa-ent": 3,
+        "wpa2-psk": 4, "wpa2_psk": 4, "wpa2": 4,
+        "wpa2-enterprise": 5, "wpa2-ent": 5,
+    }
+    _AUTH_REVERSE = {0: "open", 1: "wep", 2: "wpa-psk", 3: "wpa-enterprise",
+                     4: "wpa2-psk", 5: "wpa2-enterprise"}
+
+    _ENC_MAP = {
+        "none": 0, "off": 0,
+        "wep40": 1, "wep64": 1,
+        "wep104": 2, "wep128": 2,
+        "tkip": 3,
+        "aes": 4,
+        "aes+tkip": 5, "tkip+aes": 5,
+    }
+    _ENC_REVERSE = {0: "none", 1: "wep64", 2: "wep128",
+                    3: "tkip", 4: "aes", 5: "aes+tkip"}
+
+    def _find_wireless_server(self, device_el):
+        """Return the <WIRELESS_SERVER> element of an AP/router, or None."""
+        engine = device_el.find("ENGINE")
+        if engine is None:
+            return None
+        return engine.find("WIRELESS_SERVER")
+
+    def get_ap_config(self, device_name: str) -> dict[str, str]:
+        """Return wireless config of an AP/home router.
+
+        Keys: ssid, authentication, encryption, channel, ssid_broadcast.
+        """
+        d = self._find_device(device_name)
+        ws = self._find_wireless_server(d)
+        if ws is None:
+            raise ValueError(f"{device_name!r} has no <WIRELESS_SERVER> (not an AP?)")
+        common = ws.find("WIRELESS_COMMON")
+        if common is None:
+            raise ValueError(f"{device_name!r}: malformed AP — missing WIRELESS_COMMON")
+        ssid = (common.findtext("SSID") or "").strip()
+        auth_n = int((common.findtext("AUTHEN_TYPE") or "0").strip() or 0)
+        enc_n = int((common.findtext("ENCRYPT_TYPE") or "0").strip() or 0)
+        chan = (common.findtext("STANDARD_CHANNEL") or "0").strip()
+        broadcast = (ws.findtext("SSID_BROADCAST_ENABLED") or "1").strip()
+        wp = common.find("WEP_PROCESS")
+        password = (wp.findtext("KEY") or "").strip() if wp is not None else ""
+        return {
+            "ssid": ssid,
+            "authentication": self._AUTH_REVERSE.get(auth_n, str(auth_n)),
+            "encryption": self._ENC_REVERSE.get(enc_n, str(enc_n)),
+            "password": password,
+            "channel": chan,
+            "ssid_broadcast": "true" if broadcast == "1" else "false",
+        }
+
+    def set_ap_config(self, device_name: str,
+                      ssid: str | None = None,
+                      authentication: str | None = None,
+                      encryption: str | None = None,
+                      password: str | None = None,
+                      channel: int | str | None = None,
+                      ssid_broadcast: bool | None = None) -> dict[str, str]:
+        """Set wireless config of an AP/home router.
+
+        - authentication: open|wep|wpa-psk|wpa2-psk|wpa-enterprise|wpa2-enterprise
+        - encryption: none|wep40|wep104|aes|tkip|aes+tkip
+        - password: PSK/WEP key — stored as <PSK_PASSPHRASE>
+        - channel: integer channel number (1-13 for 2.4GHz)
+        """
+        d = self._find_device(device_name)
+        ws = self._find_wireless_server(d)
+        if ws is None:
+            raise ValueError(f"{device_name!r} has no <WIRELESS_SERVER> (not an AP?)")
+        common = ws.find("WIRELESS_COMMON")
+        if common is None:
+            raise ValueError(f"{device_name!r}: malformed AP — missing WIRELESS_COMMON")
+
+        if ssid is not None:
+            self._set_or_create(common, "SSID", ssid)
+        if authentication is not None:
+            key = authentication.lower().strip()
+            if key not in self._AUTH_MAP:
+                raise ValueError(
+                    f"unknown authentication {authentication!r}. "
+                    f"Use one of: {', '.join(sorted(set(self._AUTH_MAP)))}"
+                )
+            self._set_or_create(common, "AUTHEN_TYPE", str(self._AUTH_MAP[key]))
+        if encryption is not None:
+            key = encryption.lower().strip()
+            if key not in self._ENC_MAP:
+                raise ValueError(
+                    f"unknown encryption {encryption!r}. "
+                    f"Use one of: {', '.join(sorted(set(self._ENC_MAP)))}"
+                )
+            self._set_or_create(common, "ENCRYPT_TYPE", str(self._ENC_MAP[key]))
+        if password is not None:
+            # PT stores the PSK / WEP key under <WIRELESS_COMMON>/<WEP_PROCESS>/<KEY>.
+            # <WEP_PROCESS>/<ENCRYPTION> mirrors <ENCRYPT_TYPE>.
+            wp = common.find("WEP_PROCESS")
+            if wp is None:
+                wp = etree.SubElement(common, "WEP_PROCESS")
+            self._set_or_create(wp, "KEY", password)
+            # Keep WEP_PROCESS encryption in sync with the chosen ENCRYPT_TYPE
+            enc_el = common.find("ENCRYPT_TYPE")
+            if enc_el is not None and (enc_el.text or "").strip():
+                self._set_or_create(wp, "ENCRYPTION", enc_el.text)
+            # Ensure USERID/PASSWORD elements exist (for Enterprise modes)
+            if wp.find("USERID") is None:
+                etree.SubElement(wp, "USERID")
+            if wp.find("PASSWORD") is None:
+                etree.SubElement(wp, "PASSWORD")
+        if channel is not None:
+            self._set_or_create(common, "STANDARD_CHANNEL", str(int(channel)))
+        if ssid_broadcast is not None:
+            self._set_or_create(ws, "SSID_BROADCAST_ENABLED",
+                                "1" if ssid_broadcast else "0")
+        return self.get_ap_config(device_name)
+
+    # ----------------------------------------------- IoT (Smart Things) regs
+    # CLIENT_MODE values:
+    #   NO_SERVER    - device is not registered
+    #   HOME_GATEWAY - device registers to a local Home Gateway (DLC100)
+    #   REMOTE_SERVER - device registers to a remote Registration Server
+    _IOT_MODES = {"none", "no_server", "home_gateway", "remote_server"}
+
+    def _iot_client(self, device_el):
+        engine = device_el.find("ENGINE")
+        if engine is None:
+            return None
+        return engine.find("IOE_CLIENT")
+
+    def get_iot_registration(self, device_name: str) -> dict[str, str]:
+        """Return the IoT registration config of a Smart Thing."""
+        d = self._find_device(device_name)
+        ioe = self._iot_client(d)
+        if ioe is None:
+            raise ValueError(f"{device_name!r} has no <IOE_CLIENT> (not an IoT device?)")
+        return {
+            "mode": (ioe.findtext("CLIENT_MODE") or "NO_SERVER").strip(),
+            "server": (ioe.findtext("SERVER_ADDRESS") or "").strip(),
+            "username": (ioe.findtext("USERNAME") or "").strip(),
+            "password": (ioe.findtext("PASSWORD") or "").strip(),
+        }
+
+    def set_iot_registration(self, device_name: str,
+                             mode: str,
+                             server: str | None = None,
+                             username: str | None = None,
+                             password: str | None = None) -> dict[str, str]:
+        """Configure how a Smart Thing registers to an IoT server.
+
+        - mode: 'none' (NO_SERVER), 'home_gateway' (local DLC100), or
+          'remote_server' (Registration Server). Pass the human-friendly
+          variant; we normalize.
+        - server: server IP (only for home_gateway / remote_server)
+        - username, password: credentials (only for remote_server)
+        """
+        m = mode.lower().strip().replace("-", "_")
+        if m in {"none", "no_server"}:
+            client_mode = "NO_SERVER"
+        elif m == "home_gateway":
+            client_mode = "HOME_GATEWAY"
+        elif m == "remote_server":
+            client_mode = "REMOTE_SERVER"
+        else:
+            raise ValueError(
+                f"unknown mode {mode!r}. Use: none, home_gateway, remote_server"
+            )
+
+        d = self._find_device(device_name)
+        engine = d.find("ENGINE")
+        ioe = engine.find("IOE_CLIENT")
+        if ioe is None:
+            ioe = etree.SubElement(engine, "IOE_CLIENT")
+
+        self._set_or_create(ioe, "CLIENT_MODE", client_mode)
+        if server is not None:
+            self._set_or_create(ioe, "SERVER_ADDRESS", server)
+        if username is not None:
+            self._set_or_create(ioe, "USERNAME", username)
+        if password is not None:
+            self._set_or_create(ioe, "PASSWORD", password)
+
+        return self.get_iot_registration(device_name)
+
     # -------------------------------------------------- remove device / link
     def remove_device(self, name: str) -> int:
         """Remove a device and all links referencing it. Returns count of removed links."""

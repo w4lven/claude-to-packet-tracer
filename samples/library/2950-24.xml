@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="2950-24">Switch</TYPE>
+     <TYPE model="2950-24" customModel="">Switch</TYPE>
      <NAME translate="true">Switch4</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -509,12 +509,12 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>63597</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:7064838611110279073</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:2471856349179598335</SAVE_REF_ID>
      <SYS_NAME>Switch</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -615,7 +615,10 @@
          <NAME>flash:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>Switch</DEVICE_TYPE>
+          <SET_NAME>2950_12.1_EA4</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -628,7 +631,7 @@
            </FILE_CONTENT>
           </FILE>
          </FILES>
-         <FILE_COUNTER>1</FILE_COUNTER>
+         <FILE_COUNTER>2</FILE_COUNTER>
          <CAPACITY>64016384</CAPACITY>
         </FILE>
        </FILES>
@@ -660,11 +663,11 @@
      </ALGORITHM_SETTINGS>
      <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
      <VLANS>
-      <VLAN name="default" rspan="0" number="1"/>
-      <VLAN name="fddi-default" rspan="0" number="1002"/>
-      <VLAN name="token-ring-default" rspan="0" number="1003"/>
-      <VLAN name="fddinet-default" rspan="0" number="1004"/>
-      <VLAN name="trnet-default" rspan="0" number="1005"/>
+      <VLAN name="default" number="1" rspan="0"/>
+      <VLAN name="fddi-default" number="1002" rspan="0"/>
+      <VLAN name="token-ring-default" number="1003" rspan="0"/>
+      <VLAN name="fddinet-default" number="1004" rspan="0"/>
+      <VLAN name="trnet-default" number="1005" rspan="0"/>
      </VLANS>
      <VTP>
       <DOMAIN_NAME/>
@@ -686,17 +689,17 @@
     </ENGINE>
     <WORKSPACE>
      <LOGICAL>
-      <X>791</X>
+      <X>790</X>
       <Y>480</Y>
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1219640186992</MEM_ADDR>
-      <DEV_ADDR>1219444046472</DEV_ADDR>
+      <MEM_ADDR>1824435451776</MEM_ADDR>
+      <DEV_ADDR>1824794405048</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{5043ced4-3f31-4f50-8a35-ae0b883167a3},{1bb73908-56e8-4876-a81d-47407298c437}</PHYSICAL>
      <PHYSICAL_CPUR>
-      <X_PN>0.204</X_PN>
+      <X_PN>0.20375</X_PN>
       <Y_PN>0.13</Y_PN>
       <X>25</X>
       <Y>0</Y>

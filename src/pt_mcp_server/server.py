@@ -317,6 +317,88 @@ def pkt_set_pc_network(device_name: str,
 
 
 @mcp.tool()
+def pkt_get_ap_config(device_name: str) -> str:
+    """Get the wireless config of an AP / wireless router.
+
+    Returns SSID, authentication, encryption, channel, and broadcast state.
+    """
+    t = _require()
+    try:
+        cfg = t.get_ap_config(device_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "\n".join(f"{k:15s}: {v if v else '(unset)'}" for k, v in cfg.items())
+
+
+@mcp.tool()
+def pkt_set_ap_config(device_name: str,
+                     ssid: str | None = None,
+                     authentication: str | None = None,
+                     encryption: str | None = None,
+                     password: str | None = None,
+                     channel: int | None = None,
+                     ssid_broadcast: bool | None = None) -> str:
+    """Set the wireless config of an AP / wireless router.
+
+    - authentication: open | wep | wpa-psk | wpa2-psk | wpa-enterprise | wpa2-enterprise
+    - encryption:     none | wep40 | wep104 | aes | tkip | aes+tkip
+    - password:       PSK / WEP key (only needed when authentication != open)
+    - channel:        1-13 (2.4 GHz)
+
+    Example: pkt_set_ap_config("AP1", ssid="MyLab", authentication="wpa2-psk",
+                                encryption="aes", password="Cisco123!", channel=6)
+    """
+    t = _require()
+    try:
+        cfg = t.set_ap_config(device_name, ssid=ssid, authentication=authentication,
+                              encryption=encryption, password=password,
+                              channel=channel, ssid_broadcast=ssid_broadcast)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "OK\n" + "\n".join(f"  {k:15s}: {v}" for k, v in cfg.items())
+
+
+@mcp.tool()
+def pkt_get_iot_registration(device_name: str) -> str:
+    """Get the IoT registration config of a Smart Thing (Door, Light, Webcam, …).
+
+    Shows registration mode (NO_SERVER / HOME_GATEWAY / REMOTE_SERVER),
+    server address, username, password.
+    """
+    t = _require()
+    try:
+        cfg = t.get_iot_registration(device_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "\n".join(f"{k:10s}: {v if v else '(unset)'}" for k, v in cfg.items())
+
+
+@mcp.tool()
+def pkt_set_iot_registration(device_name: str, mode: str,
+                            server: str | None = None,
+                            username: str | None = None,
+                            password: str | None = None) -> str:
+    """Configure how a Smart Thing registers to an IoT server.
+
+    - mode: 'none', 'home_gateway' (local DLC100), or 'remote_server'
+      (Registration Server).
+    - server: server IP (only for home_gateway / remote_server)
+    - username, password: credentials (only for remote_server)
+
+    Example: pkt_set_iot_registration("SmartDoor1", "remote_server",
+              server="192.168.1.10", username="admin", password="ciscoiot")
+    """
+    t = _require()
+    try:
+        cfg = t.set_iot_registration(device_name, mode=mode,
+                                     server=server, username=username,
+                                     password=password)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "OK\n" + "\n".join(f"  {k:10s}: {v if v else '(unset)'}" for k, v in cfg.items())
+
+
+@mcp.tool()
 def pkt_save(path: str | None = None) -> str:
     """Save the current topology back to a .pkt file.
 

@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="Home-VoIP-PT">HomeVoip</TYPE>
+     <TYPE model="Home-VoIP-PT" customModel="">HomeVoip</TYPE>
      <NAME translate="true">Home VoIP0</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -89,12 +89,12 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>10826</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:17612061398719548181</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:5658864353295083097</SAVE_REF_ID>
      <SYS_NAME>PC</SYS_NAME>
      <GATEWAY/>
      <DNS_CLIENT>
@@ -267,7 +267,10 @@
          <NAME>Desktop:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CLinksysFirmwareUpgPage">
+          <TEXT/>
+          <Firmware_Version>v1.1_1.51.2</Firmware_Version>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -275,7 +278,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Home Router PT-AC firmware1</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.04.16</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -285,7 +288,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Home Router PT-AC firmware2</TEXT>
+            <TEXT/>
             <Firmware_Version>v2.0_10.1.17</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -295,7 +298,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Linkys firmware1</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.03.6</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -305,7 +308,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Linkys firmware2</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.1_1.51.2</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -328,7 +331,9 @@
          <NAME>c:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>This is a sample text file</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -395,18 +400,18 @@
     </ENGINE>
     <WORKSPACE>
      <LOGICAL>
-      <X>754</X>
+      <X>753</X>
       <Y>622</Y>
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1219022218624</MEM_ADDR>
-      <DEV_ADDR>1218983693456</DEV_ADDR>
+      <MEM_ADDR>1824879243936</MEM_ADDR>
+      <DEV_ADDR>1824435393312</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{c7ed8850-f7e1-4ce5-9ce0-255bd8be7b17}</PHYSICAL>
      <PHYSICAL_CPUR>
-      <X_PN>0.215</X_PN>
-      <Y_PN>0.1075</Y_PN>
+      <X_PN>0.124855</X_PN>
+      <Y_PN>0.100561</Y_PN>
       <X>430</X>
       <Y>215</Y>
       <SLOT>0</SLOT>

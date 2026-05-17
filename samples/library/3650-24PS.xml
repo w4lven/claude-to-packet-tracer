@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="3650-24PS">MultiLayerSwitch</TYPE>
+     <TYPE model="3650-24PS" customModel="">MultiLayerSwitch</TYPE>
      <NAME translate="true">Multilayer Switch1</NAME>
      <POWER>false</POWER>
      <DESCRIPTION/>
@@ -1228,7 +1228,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:1441288190349986435</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:7577709241020118165</SAVE_REF_ID>
      <SYS_NAME>Switch</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -1364,7 +1364,10 @@
          <NAME>flash:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>MultiLayerSwitch</DEVICE_TYPE>
+          <SET_NAME>3650_daneli_16.3.2</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -1436,11 +1439,11 @@
      </LICENSE_MANAGER>
      <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
      <VLANS>
-      <VLAN name="default" rspan="0" number="1"/>
-      <VLAN name="fddi-default" rspan="0" number="1002"/>
-      <VLAN name="token-ring-default" rspan="0" number="1003"/>
-      <VLAN name="fddinet-default" rspan="0" number="1004"/>
-      <VLAN name="trnet-default" rspan="0" number="1005"/>
+      <VLAN name="default" number="1" rspan="0"/>
+      <VLAN name="fddi-default" number="1002" rspan="0"/>
+      <VLAN name="token-ring-default" number="1003" rspan="0"/>
+      <VLAN name="fddinet-default" number="1004" rspan="0"/>
+      <VLAN name="trnet-default" number="1005" rspan="0"/>
      </VLANS>
      <VTP>
       <DOMAIN_NAME/>
@@ -1488,8 +1491,8 @@
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1218833884848</MEM_ADDR>
-      <DEV_ADDR>1219028060224</DEV_ADDR>
+      <MEM_ADDR>1824435447936</MEM_ADDR>
+      <DEV_ADDR>1825110395488</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{62f3415d-e6d8-4586-bb6e-4572636a368f}</PHYSICAL>
      <PHYSICAL_CPUR>

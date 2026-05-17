@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="Server-PT">Server</TYPE>
+     <TYPE model="Server-PT" customModel="">Server</TYPE>
      <NAME translate="true">Server0</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -72,12 +72,12 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
      <STARTTIME>1778938844000</STARTTIME>
-     <STARTSIMTIME>5411</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:9828039464902584048</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:12281887343829905620</SAVE_REF_ID>
      <SYS_NAME>PC</SYS_NAME>
      <GATEWAY/>
      <DNS_CLIENT>
@@ -267,7 +267,10 @@
          <NAME>Desktop:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CLinksysFirmwareUpgPage">
+          <TEXT/>
+          <Firmware_Version>v1.1_1.51.2</Firmware_Version>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -275,7 +278,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Home Router PT-AC firmware1</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.04.16</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -285,7 +288,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Home Router PT-AC firmware2</TEXT>
+            <TEXT/>
             <Firmware_Version>v2.0_10.1.17</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -295,7 +298,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Linkys firmware1</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.03.6</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -305,7 +308,7 @@
            <DATE_TIME>0</DATE_TIME>
            <PERMISSION>6</PERMISSION>
            <FILE_CONTENT class="CLinksysFirmwareUpgPage">
-            <TEXT>Linkys firmware2</TEXT>
+            <TEXT/>
             <Firmware_Version>v1.1_1.51.2</Firmware_Version>
            </FILE_CONTENT>
           </FILE>
@@ -328,7 +331,9 @@
          <NAME>c:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>This is a sample text file</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -348,7 +353,10 @@
          <NAME>ftp:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>Switch</DEVICE_TYPE>
+          <SET_NAME>pt_12.1_EA4</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -713,7 +721,17 @@
          <NAME>http:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CHttpPage">
+          <TEXT>&lt;html&gt;
+&lt;center&gt;&lt;font size='+2' color='blue'&gt;Cisco Packet Tracer&lt;/font&gt;&lt;/center&gt;
+&lt;hr&gt;Welcome to Cisco Packet Tracer. Opening doors to new opportunities. Mind Wide Open.
+&lt;p&gt;Quick Links:
+&lt;br&gt;&lt;a href='helloworld.html'&gt;A small page&lt;/a&gt;
+&lt;br&gt;&lt;a href='copyrights.html'&gt;Copyrights&lt;/a&gt;
+&lt;br&gt;&lt;a href='image.html'&gt;Image page&lt;/a&gt;
+&lt;br&gt;&lt;a href='cscoptlogo177x111.jpg'&gt;Image&lt;/a&gt;
+&lt;/html&gt;</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>4</FILE_NUMBER>
@@ -788,7 +806,50 @@ Hello, world!
          <NAME>ioe:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CHttpPage">
+          <TEXT>&lt;html&gt;
+&lt;head&gt;
+&lt;script&gt;
+function validateLogin(form)
+{
+  var userid = document.forms["login"]["userid"].value;
+  var password = document.forms["login"]["pw"].value;
+  if (userid.length == 0)
+  {
+    alert("Please enter the userid.");
+  }
+  else if (password.length == 0)
+  {
+    alert("Please enter the password.");
+  }
+  else
+  {
+    CHttpFormExtractor.submitIoeLogin(userid, password, function(rtn) { form.submit();});
+  }
+  return false;
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;center&gt;
+&lt;h3&gt;Registration Server Login&lt;/h3&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;
+&lt;form name="login" method="post" action="login_action.php" onsubmit="return validateLogin(this)"&gt;
+Username: &lt;input type="text" name="userid" id="userid" value="" size="20"&gt;&lt;br&gt;
+Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;br&gt;
+&lt;br&gt;
+&lt;center&gt;
+&lt;input type="submit" value="Sign In"&gt;
+&lt;/center&gt;
+&lt;/form&gt;
+&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/center&gt;
+&lt;span&gt;Don't have an IoT account?&lt;/span&gt; &lt;a id="idA_SignUp" class="TextSemiBold" href="create_account.html"&gt;Sign up now&lt;/a&gt;
+&lt;/body&gt;
+&lt;/html&gt;</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>2</FILE_NUMBER>
@@ -908,7 +969,10 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
          <NAME>tftp:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>Switch</DEVICE_TYPE>
+          <SET_NAME>pt_12.1_EA4</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -1423,8 +1487,8 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1219215444640</MEM_ADDR>
-      <DEV_ADDR>1219441681232</DEV_ADDR>
+      <MEM_ADDR>1824879234336</MEM_ADDR>
+      <DEV_ADDR>1824435399888</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{2700438c-7bae-40d1-8b10-eeb42956469b}</PHYSICAL>
      <PHYSICAL_CPUR>

@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="2901">Router</TYPE>
+     <TYPE model="2901" customModel="">Router</TYPE>
      <NAME translate="true">Router3</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -123,12 +123,12 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>35227</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:9885665002605854768</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:7034293156729072827</SAVE_REF_ID>
      <SYS_NAME>Router</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -223,7 +223,9 @@
          <NAME>flash:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIpsDatFileContent">
+          <ICMP_SIGNATURE/>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -321,7 +323,7 @@
        <LICENSE>
         <UNIQUE_ID>2</UNIQUE_ID>
         <STORE_INDEX>0</STORE_INDEX>
-        <CURRENT_BOOT>0</CURRENT_BOOT>
+        <CURRENT_BOOT>1</CURRENT_BOOT>
         <NEXT_REBOOT>0</NEXT_REBOOT>
         <LICENSE_COUNT>0</LICENSE_COUNT>
         <RIGHT_TO_USE>1</RIGHT_TO_USE>
@@ -330,7 +332,7 @@
         <FEATURE_NAME>securityk9</FEATURE_NAME>
         <TECHNOLOGY>security</TECHNOLOGY>
         <VERSION>1.0</VERSION>
-        <LICENSE_STATE>Inactive</LICENSE_STATE>
+        <LICENSE_STATE>Active, Not in Use, EULA accepted</LICENSE_STATE>
         <EVAL_TOTAL>208 weeks 2 days</EVAL_TOTAL>
         <EVAL_LEFT>208 weeks 2 days</EVAL_LEFT>
         <EVAL_USED>0  minute  0  second</EVAL_USED>
@@ -344,7 +346,7 @@
        <LICENSE>
         <UNIQUE_ID>3</UNIQUE_ID>
         <STORE_INDEX>1</STORE_INDEX>
-        <CURRENT_BOOT>0</CURRENT_BOOT>
+        <CURRENT_BOOT>1</CURRENT_BOOT>
         <NEXT_REBOOT>0</NEXT_REBOOT>
         <LICENSE_COUNT>0</LICENSE_COUNT>
         <RIGHT_TO_USE>1</RIGHT_TO_USE>
@@ -353,7 +355,7 @@
         <FEATURE_NAME>datak9</FEATURE_NAME>
         <TECHNOLOGY>data</TECHNOLOGY>
         <VERSION>1.0</VERSION>
-        <LICENSE_STATE>Inactive</LICENSE_STATE>
+        <LICENSE_STATE>Active, Not in Use, EULA accepted</LICENSE_STATE>
         <EVAL_TOTAL>208 weeks 2 days</EVAL_TOTAL>
         <EVAL_LEFT>208 weeks 2 days</EVAL_LEFT>
         <EVAL_USED>0  minute  0  second</EVAL_USED>
@@ -367,7 +369,7 @@
        <LICENSE>
         <UNIQUE_ID>4</UNIQUE_ID>
         <STORE_INDEX>2</STORE_INDEX>
-        <CURRENT_BOOT>0</CURRENT_BOOT>
+        <CURRENT_BOOT>1</CURRENT_BOOT>
         <NEXT_REBOOT>0</NEXT_REBOOT>
         <LICENSE_COUNT>0</LICENSE_COUNT>
         <RIGHT_TO_USE>1</RIGHT_TO_USE>
@@ -376,7 +378,7 @@
         <FEATURE_NAME>uck9</FEATURE_NAME>
         <TECHNOLOGY>uc</TECHNOLOGY>
         <VERSION>1.0</VERSION>
-        <LICENSE_STATE>Inactive</LICENSE_STATE>
+        <LICENSE_STATE>Active, Not in Use, EULA accepted</LICENSE_STATE>
         <EVAL_TOTAL>208 weeks 2 days</EVAL_TOTAL>
         <EVAL_LEFT>208 weeks 2 days</EVAL_LEFT>
         <EVAL_USED>0  minute  0  second</EVAL_USED>
@@ -391,11 +393,11 @@
      </LICENSE_MANAGER>
      <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
      <VLANS>
-      <VLAN name="default" rspan="0" number="1"/>
-      <VLAN name="fddi-default" rspan="0" number="1002"/>
-      <VLAN name="token-ring-default" rspan="0" number="1003"/>
-      <VLAN name="fddinet-default" rspan="0" number="1004"/>
-      <VLAN name="trnet-default" rspan="0" number="1005"/>
+      <VLAN name="default" number="1" rspan="0"/>
+      <VLAN name="fddi-default" number="1002" rspan="0"/>
+      <VLAN name="token-ring-default" number="1003" rspan="0"/>
+      <VLAN name="fddinet-default" number="1004" rspan="0"/>
+      <VLAN name="trnet-default" number="1005" rspan="0"/>
      </VLANS>
      <VTP>
       <DOMAIN_NAME/>
@@ -431,8 +433,8 @@
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1219444384544</MEM_ADDR>
-      <DEV_ADDR>1218975401776</DEV_ADDR>
+      <MEM_ADDR>1824879254016</MEM_ADDR>
+      <DEV_ADDR>1824468507600</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{d35ec17c-3612-451b-a555-65c0d1e86c14}</PHYSICAL>
      <PHYSICAL_CPUR>

@@ -1,6 +1,6 @@
 <DEVICE>
     <ENGINE>
-     <TYPE customModel="" model="IE-2000">MultiLayerSwitch</TYPE>
+     <TYPE model="IE-2000" customModel="">MultiLayerSwitch</TYPE>
      <NAME translate="true">Switch3</NAME>
      <POWER>true</POWER>
      <DESCRIPTION/>
@@ -446,12 +446,12 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>61728</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:131481005860302202</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:8871045775737306369</SAVE_REF_ID>
      <SYS_NAME>Switch</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -554,7 +554,9 @@
          <NAME>flash:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIpsDatFileContent">
+          <ICMP_SIGNATURE/>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFile">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -652,7 +654,7 @@
        <LICENSE>
         <UNIQUE_ID>2</UNIQUE_ID>
         <STORE_INDEX>0</STORE_INDEX>
-        <CURRENT_BOOT>0</CURRENT_BOOT>
+        <CURRENT_BOOT>1</CURRENT_BOOT>
         <NEXT_REBOOT>0</NEXT_REBOOT>
         <LICENSE_COUNT>0</LICENSE_COUNT>
         <RIGHT_TO_USE>0</RIGHT_TO_USE>
@@ -661,7 +663,7 @@
         <FEATURE_NAME>enhancedlanbase</FEATURE_NAME>
         <TECHNOLOGY>ie2k</TECHNOLOGY>
         <VERSION>1.0</VERSION>
-        <LICENSE_STATE>Active, Not In Use</LICENSE_STATE>
+        <LICENSE_STATE>Active, Not in Use, EULA accepted</LICENSE_STATE>
         <EVAL_TOTAL>208 weeks 2 days</EVAL_TOTAL>
         <EVAL_LEFT>208 weeks 2 days</EVAL_LEFT>
         <EVAL_USED>0  minute  0  second</EVAL_USED>
@@ -676,11 +678,11 @@
      </LICENSE_MANAGER>
      <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
      <VLANS>
-      <VLAN name="default" rspan="0" number="1"/>
-      <VLAN name="fddi-default" rspan="0" number="1002"/>
-      <VLAN name="token-ring-default" rspan="0" number="1003"/>
-      <VLAN name="fddinet-default" rspan="0" number="1004"/>
-      <VLAN name="trnet-default" rspan="0" number="1005"/>
+      <VLAN name="default" number="1" rspan="0"/>
+      <VLAN name="fddi-default" number="1002" rspan="0"/>
+      <VLAN name="token-ring-default" number="1003" rspan="0"/>
+      <VLAN name="fddinet-default" number="1004" rspan="0"/>
+      <VLAN name="trnet-default" number="1005" rspan="0"/>
      </VLANS>
      <VTP>
       <DOMAIN_NAME/>
@@ -705,7 +707,7 @@
      </CELLULAR_CLIENT_MANAGER>
      <PTP_PROCESS>
       <PTP_CLOCK_ID>0x00:90:2B:FF:FE:C1:E5:00</PTP_CLOCK_ID>
-      <PTP_CLOCK_TIME>1301448495732</PTP_CLOCK_TIME>
+      <PTP_CLOCK_TIME>1301448604867</PTP_CLOCK_TIME>
      </PTP_PROCESS>
      <NDV6>
       <ENABLED_HOST/>
@@ -727,17 +729,17 @@
     </ENGINE>
     <WORKSPACE>
      <LOGICAL>
-      <X>633</X>
+      <X>632</X>
       <Y>456</Y>
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1218833885808</MEM_ADDR>
-      <DEV_ADDR>1219028066656</DEV_ADDR>
+      <MEM_ADDR>1824435450336</MEM_ADDR>
+      <DEV_ADDR>1824548771392</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{5043ced4-3f31-4f50-8a35-ae0b883167a3},{27d85741-cd78-4da6-9ab4-b29c637c4d36}</PHYSICAL>
      <PHYSICAL_CPUR>
-      <X_PN>0.1635</X_PN>
+      <X_PN>0.16325</X_PN>
       <Y_PN>0.1265</Y_PN>
       <X>4</X>
       <Y>0</Y>
