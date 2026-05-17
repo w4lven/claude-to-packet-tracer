@@ -273,6 +273,50 @@ def pkt_new_from_template(template_path: str) -> str:
 
 
 @mcp.tool()
+def pkt_get_pc_network(device_name: str) -> str:
+    """Get the IP/mask/gateway/DNS/DHCP settings of an end device (PC, Laptop, Server).
+
+    Returns a multi-line summary. For routers/switches use pkt_get_config instead.
+    """
+    t = _require()
+    try:
+        cfg = t.get_pc_network(device_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "\n".join(
+        f"{k:8s}: {v if v else '(unset)'}" for k, v in cfg.items()
+    )
+
+
+@mcp.tool()
+def pkt_set_pc_network(device_name: str,
+                       ip: str | None = None,
+                       mask: str | None = None,
+                       gateway: str | None = None,
+                       dns: str | None = None,
+                       dhcp: bool | None = None) -> str:
+    """Set the IP config of an end device (PC, Laptop, Server).
+
+    Either pass `dhcp=True` to enable DHCP, or pass `ip` + `mask`
+    (+ optional `gateway`, `dns`) for a static config.
+    Any param left None is preserved.
+
+    Example (static): pkt_set_pc_network("PC1", "192.168.1.10", "255.255.255.0",
+                                          gateway="192.168.1.1", dns="8.8.8.8")
+    Example (DHCP):   pkt_set_pc_network("PC1", dhcp=True)
+    """
+    t = _require()
+    try:
+        cfg = t.set_pc_network(device_name, ip=ip, mask=mask,
+                               gateway=gateway, dns=dns, dhcp=dhcp)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return "OK\n" + "\n".join(
+        f"  {k:8s}: {v if v else '(unset)'}" for k, v in cfg.items()
+    )
+
+
+@mcp.tool()
 def pkt_save(path: str | None = None) -> str:
     """Save the current topology back to a .pkt file.
 

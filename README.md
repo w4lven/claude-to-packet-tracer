@@ -88,6 +88,8 @@ Claude will call `pkt_open`, `pkt_list_devices`, `pkt_get_config`.
 | `pkt_list_links()` | List links between device ports |
 | `pkt_get_config(device)` | Get IOS running-config of a device |
 | `pkt_set_config(device, text)` | Replace the running-config |
+| `pkt_get_pc_network(device)` | Get IP/mask/gateway/DNS/DHCP of a PC/Server (v0.2) |
+| `pkt_set_pc_network(device, ip, mask, gateway, dns, dhcp)` | Set IP config of a PC/Server (v0.2) |
 | `pkt_append_config(device, lines)` | Append lines to the running-config |
 | `pkt_rename_device(old, new)` | Rename (NAME + SYS_NAME + hostname) |
 | `pkt_add_device(template, source, new, x, y)` | Clone a device from any template `.pkt` |
@@ -181,13 +183,10 @@ claude-to-packet-tracer/
 ## Limits
 
 - ✅ Routers / switches: full running-config R/W (CCNA-level IOS).
-- ❌ End devices (PC, Laptop, Server): network settings (IP, DNS,
-  gateway) live in a different XML branch and are **not yet** exposed
-  via the MCP. PR welcome.
-- ❌ Wireless devices (AP, WLC): same — not yet exposed.
-- ❌ IoT devices: not yet exposed.
-
-These could land in a v0.2.
+- ✅ End devices (PC, Laptop, Server): IP / mask / gateway / DNS / DHCP
+  via `pkt_get_pc_network` and `pkt_set_pc_network` (since v0.2).
+- ❌ Wireless devices (AP, WLC): not yet exposed. PR welcome.
+- ❌ IoT devices (Smart Things, MCU-PT, …): not yet exposed.
 
 ---
 

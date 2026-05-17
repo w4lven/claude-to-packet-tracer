@@ -430,6 +430,99 @@ class Topology:
             links_el = etree.SubElement(net, "LINKS")
         links_el.append(link)
 
+    # -------------------------------------------------- end-device IP config
+    # Wired port types we treat as "the primary NIC" on an end device.
+    _WIRED_PORT_TYPES = (
+        "eCopperFastEthernet",
+        "eCopperGigabitEthernet",
+        "eCopperEthernet",
+    )
+
+    def _find_primary_wired_port(self, device_el):
+        """Return the first <PORT> element whose <TYPE> is a wired Ethernet variant."""
+        for port in device_el.iter("PORT"):
+            type_el = port.find("TYPE")
+            if type_el is not None and (type_el.text or "").strip() in self._WIRED_PORT_TYPES:
+                return port
+        return None
+
+    @staticmethod
+    def _set_or_create(parent, tag: str, text: str | None) -> None:
+        el = parent.find(tag)
+        if el is None:
+            el = etree.SubElement(parent, tag)
+        el.text = text
+
+    def get_pc_network(self, device_name: str) -> dict[str, str]:
+        """Return the static IP config of an end device (PC, Laptop, Server, …).
+
+        Returns a dict with keys: ip, mask, gateway, dns, dhcp (true/false).
+        Empty string means unset.
+        """
+        d = self._find_device(device_name)
+        engine = d.find("ENGINE")
+        port = self._find_primary_wired_port(d)
+        if port is None:
+            raise ValueError(f"{device_name!r} has no wired Ethernet port")
+        out = {
+            "ip": (port.findtext("IP") or "").strip(),
+            "mask": (port.findtext("SUBNET") or "").strip(),
+            "gateway": (engine.findtext("GATEWAY") or "").strip(),
+            "dns": "",
+            "dhcp": (port.findtext("PORT_DHCP_ENABLE") or "false").strip(),
+        }
+        dns_client = engine.find("DNS_CLIENT")
+        if dns_client is not None:
+            out["dns"] = (dns_client.findtext("SERVER_IP") or "").strip()
+        return out
+
+    def set_pc_network(self, device_name: str,
+                       ip: str | None = None,
+                       mask: str | None = None,
+                       gateway: str | None = None,
+                       dns: str | None = None,
+                       dhcp: bool | None = None) -> dict[str, str]:
+        """Set the static IP / DHCP config of an end device (PC, Laptop, Server).
+
+        Pass `dhcp=True` to clear the static config and enable DHCP, or pass
+        `ip` + `mask` (+ optional `gateway`, `dns`) for a static config.
+        Any field left as None is preserved.
+        Returns the resulting config (same shape as get_pc_network).
+        """
+        d = self._find_device(device_name)
+        engine = d.find("ENGINE")
+        port = self._find_primary_wired_port(d)
+        if port is None:
+            raise ValueError(f"{device_name!r} has no wired Ethernet port")
+
+        if dhcp is True:
+            # Clear statics, enable DHCP
+            self._set_or_create(port, "IP", "")
+            self._set_or_create(port, "SUBNET", "")
+            self._set_or_create(port, "PORT_GATEWAY", "")
+            self._set_or_create(port, "PORT_DNS", "")
+            self._set_or_create(port, "PORT_DHCP_ENABLE", "true")
+        else:
+            if dhcp is False or ip is not None or mask is not None:
+                self._set_or_create(port, "PORT_DHCP_ENABLE", "false")
+            if ip is not None:
+                self._set_or_create(port, "IP", ip)
+            if mask is not None:
+                self._set_or_create(port, "SUBNET", mask)
+            if gateway is not None:
+                self._set_or_create(port, "PORT_GATEWAY", gateway)
+                # Also set device-level GATEWAY (what PT's "IP Configuration" UI writes)
+                self._set_or_create(engine, "GATEWAY", gateway)
+            if dns is not None:
+                self._set_or_create(port, "PORT_DNS", dns)
+                # Device-level DNS_CLIENT/SERVER_IP
+                dns_client = engine.find("DNS_CLIENT")
+                if dns_client is None:
+                    dns_client = etree.SubElement(engine, "DNS_CLIENT")
+                self._set_or_create(dns_client, "SERVER_IP", dns)
+
+        return self.get_pc_network(device_name)
+
     # -------------------------------------------------- remove device / link
     def remove_device(self, name: str) -> int:
         """Remove a device and all links referencing it. Returns count of removed links."""
