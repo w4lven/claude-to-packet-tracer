@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "mcp>=1.2",
     "lxml>=5.0",
-    "pycryptoplus>=1.0",
+    "pycryptoplus",
 ]
 
 [project.urls]
