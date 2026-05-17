@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-to-packet-tracer"
+version = "0.1.0"
+description = "MCP server that lets Claude read, edit, and create Cisco Packet Tracer topologies (.pkt / .pka)."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "walven" }]
+requires-python = ">=3.10"
+keywords = ["cisco", "packet-tracer", "mcp", "claude", "networking", "ccna"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Networking",
+]
+dependencies = [
+    "mcp>=1.2",
+    "lxml>=5.0",
+    "pycryptoplus>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/w4lven/claude-to-packet-tracer"
+Repository = "https://github.com/w4lven/claude-to-packet-tracer"
+Issues = "https://github.com/w4lven/claude-to-packet-tracer/issues"
+
+[project.scripts]
+pt-mcp-server = "pt_mcp_server.server:main"
+pt-decode = "scripts.decode_pkt:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

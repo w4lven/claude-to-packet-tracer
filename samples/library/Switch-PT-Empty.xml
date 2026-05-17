@@ -1,0 +1,205 @@
+<DEVICE>
+    <ENGINE>
+     <TYPE customModel="" model="Switch-PT-Empty">Switch</TYPE>
+     <NAME translate="true">Switch2</NAME>
+     <POWER>true</POWER>
+     <DESCRIPTION/>
+     <MODULE>
+      <TYPE>eNonRemovableModule</TYPE>
+      <MODEL/>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+      <SLOT>
+       <TYPE>ePtSwitchModule</TYPE>
+      </SLOT>
+     </MODULE>
+     <CUSTOM_VARS>AAAAAA==</CUSTOM_VARS>
+     <CUSTOM_INTERFACE/>
+     <SYS_CONTACT/>
+     <SYS_LOCATION/>
+     <COORD_SETTINGS>
+      <X_COORD>1269.51</X_COORD>
+      <Y_COORD>1236.93</Y_COORD>
+      <Z_COORD>0</Z_COORD>
+     </COORD_SETTINGS>
+     <SERIALNUMBER>PTT08103UMZ-</SERIALNUMBER>
+     <EXT_ATTRIBUTES>MTBF:300000;cost:350;power source:0;rack units:1;wattage:50;</EXT_ATTRIBUTES>
+     <USB_PORT_COUNT>0</USB_PORT_COUNT>
+     <TEMPLATE_CREATION_TIME>0</TEMPLATE_CREATION_TIME>
+     <STARTTIME>730940400000</STARTTIME>
+     <STARTSIMTIME>58966</STARTSIMTIME>
+     <USER_APPS>
+      <RUNNING_APPS/>
+      <DESKTOP_APPS/>
+     </USER_APPS>
+     <SAVE_REF_ID>save-ref-id:1955680763719278088</SAVE_REF_ID>
+     <SYS_NAME>Switch</SYS_NAME>
+     <RUNNINGCONFIG>
+      <LINE>!</LINE>
+      <LINE>version 12.1</LINE>
+      <LINE>no service timestamps log datetime msec</LINE>
+      <LINE>no service timestamps debug datetime msec</LINE>
+      <LINE>no service password-encryption</LINE>
+      <LINE>!</LINE>
+      <LINE>hostname Switch</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>spanning-tree mode pvst</LINE>
+      <LINE>spanning-tree extend system-id</LINE>
+      <LINE>!</LINE>
+      <LINE>interface Vlan1</LINE>
+      <LINE> no ip address</LINE>
+      <LINE> shutdown</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>line con 0</LINE>
+      <LINE>!</LINE>
+      <LINE>line vty 0 4</LINE>
+      <LINE> login</LINE>
+      <LINE>line vty 5 15</LINE>
+      <LINE> login</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>!</LINE>
+      <LINE>end</LINE>
+     </RUNNINGCONFIG>
+     <STARTUPCONFIG/>
+     <CURRENT_COMMAND_SET>pt_12.1_EA4</CURRENT_COMMAND_SET>
+     <FILE_MANAGER>
+      <FILE class="CDirectory">
+       <FILE_NUMBER>0</FILE_NUMBER>
+       <NAME/>
+       <DATE_TIME>0</DATE_TIME>
+       <PERMISSION>6</PERMISSION>
+       <FILE_CONTENT/>
+       <FILES>
+        <FILE class="CFileSystem">
+         <FILE_NUMBER>0</FILE_NUMBER>
+         <NAME>flash:</NAME>
+         <DATE_TIME>0</DATE_TIME>
+         <PERMISSION>6</PERMISSION>
+         <FILE_CONTENT/>
+         <FILES>
+          <FILE class="CFile">
+           <FILE_NUMBER>1</FILE_NUMBER>
+           <NAME>pt3000-i6q4l2-mz.121-22.EA4.bin</NAME>
+           <DATE_TIME>0</DATE_TIME>
+           <PERMISSION>6</PERMISSION>
+           <FILE_CONTENT class="CIosFileContent">
+            <DEVICE_TYPE>Switch</DEVICE_TYPE>
+            <SET_NAME>pt_12.1_EA4</SET_NAME>
+           </FILE_CONTENT>
+          </FILE>
+         </FILES>
+         <FILE_COUNTER>1</FILE_COUNTER>
+         <CAPACITY>64016384</CAPACITY>
+        </FILE>
+       </FILES>
+      </FILE>
+     </FILE_MANAGER>
+     <CONFIG_REGISTER>15</CONFIG_REGISTER>
+     <NEXT_CONFIG_REGISTER>15</NEXT_CONFIG_REGISTER>
+     <CURRENT_BOOT_FILE>flash:/pt3000-i6q4l2-mz.121-22.EA4.bin</CURRENT_BOOT_FILE>
+     <CONFIG_BOOT_FILES/>
+     <BUILD_IN_ADDR>0060.5C27.3583</BUILD_IN_ADDR>
+     <BIOS_VERSION/>
+     <SECURITY>
+      <KEY_NAME/>
+      <TEMP_KEY_NAME/>
+      <RSA_KEY/>
+      <TEMP_RSA_KEY/>
+      <TIME_DATE/>
+      <ENABLED>0</ENABLED>
+      <MODULUS_BITS>0</MODULUS_BITS>
+     </SECURITY>
+     <ALGORITHM_SETTINGS>
+      <USE_GLOBAL>true</USE_GLOBAL>
+      <CBAC_HALF_OPEN_SESSION_MULTIPLIER>1</CBAC_HALF_OPEN_SESSION_MULTIPLIER>
+      <TCP_MAX_CONNECTING_SESSIONS>100</TCP_MAX_CONNECTING_SESSIONS>
+      <TCP_MAX_OPENED_SESSIONS>1000</TCP_MAX_OPENED_SESSIONS>
+      <INTERFACE_QUEUE_SIZE>10</INTERFACE_QUEUE_SIZE>
+      <STORM_CONTROL_MULTIPLIER>10</STORM_CONTROL_MULTIPLIER>
+      <TCP_MAX_RETRANSMISSION_TIMEOUT>1000</TCP_MAX_RETRANSMISSION_TIMEOUT>
+     </ALGORITHM_SETTINGS>
+     <SCP_SERVER_ENABLED>false</SCP_SERVER_ENABLED>
+     <VLANS>
+      <VLAN name="default" rspan="0" number="1"/>
+      <VLAN name="fddi-default" rspan="0" number="1002"/>
+      <VLAN name="token-ring-default" rspan="0" number="1003"/>
+      <VLAN name="fddinet-default" rspan="0" number="1004"/>
+      <VLAN name="trnet-default" rspan="0" number="1005"/>
+     </VLANS>
+     <VTP>
+      <DOMAIN_NAME/>
+      <MODE>0</MODE>
+      <VERSION>1</VERSION>
+      <PASSWORD/>
+      <CONFIG_REVISION>0</CONFIG_REVISION>
+      <UPDATER_IP>0.0.0.0</UPDATER_IP>
+      <UPDATE_TIMESTAMP>0-0-00 00:00:00</UPDATE_TIMESTAMP>
+     </VTP>
+     <DHCP_SNOOPING_BINDING_DB_AGENT>
+      <CONFIGURED_FILENAME/>
+      <TMP_FILENAME/>
+     </DHCP_SNOOPING_BINDING_DB_AGENT>
+     <SDM>
+      <ACTIVE_TEMPLATE>0</ACTIVE_TEMPLATE>
+      <NEXT_TEMPLATE>0</NEXT_TEMPLATE>
+     </SDM>
+    </ENGINE>
+    <WORKSPACE>
+     <LOGICAL>
+      <X>337</X>
+      <Y>445</Y>
+      <DEVCLUSTERID>1-1</DEVCLUSTERID>
+      <CUSTOM_IMAGE_LOGICAL/>
+      <CUSTOM_IMAGE_PHYSICAL/>
+      <MEM_ADDR>1218833881008</MEM_ADDR>
+      <DEV_ADDR>1219444043512</DEV_ADDR>
+     </LOGICAL>
+     <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{911fb945-c974-4b86-b5e5-c9dc22c15637}</PHYSICAL>
+     <PHYSICAL_CPUR>
+      <X_PN>0.09525</X_PN>
+      <Y_PN>0.12125</Y_PN>
+      <X>115</X>
+      <Y>0</Y>
+      <SLOT>0</SLOT>
+      <SUBSLOT>0</SUBSLOT>
+      <PARENT_PATH>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15}</PARENT_PATH>
+      <CONTAINER_ID>{d0bb355c-5963-411f-b856-f558611f694e}</CONTAINER_ID>
+     </PHYSICAL_CPUR>
+    </WORKSPACE>
+   </DEVICE>
+   

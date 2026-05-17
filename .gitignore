@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Local config / state
+.claude/
+.env
+.env.local
+
+# Generated user files — keep samples/library and samples/*.pkt out of accidental edits
+samples/*.xml
+!samples/library/*.xml
+
+# OS
+.DS_Store
+Thumbs.db

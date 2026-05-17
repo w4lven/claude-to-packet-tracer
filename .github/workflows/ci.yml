@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+      - name: Import smoke test
+        run: |
+          python -c "from pt_codec import decode_pkt, encode_pkt, Topology; print('codec ok')"
+          python -c "from pt_mcp_server.server import mcp; print('server ok, tools:', len(mcp._tool_manager._tools) if hasattr(mcp,'_tool_manager') else 'unknown')"
+      - name: Codec round-trip test (synthetic)
+        run: |
+          python -c "
+          from pt_codec import decode_pkt, encode_pkt
+          xml = b'<PACKETTRACER5><VERSION>8.2.1.0118</VERSION><NETWORK><DEVICES/><LINKS/></NETWORK></PACKETTRACER5>'
+          blob = encode_pkt(xml)
+          out  = decode_pkt(blob)
+          assert out == xml, 'round-trip mismatch'
+          print('round-trip ok')
+          "
