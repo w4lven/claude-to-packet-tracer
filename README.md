@@ -23,6 +23,8 @@ You hit **File → Open Recent** in Packet Tracer and see the result.
 A real session: you ask, Claude calls the MCP tools, the `.pkt` is rewritten,
 you reload in Packet Tracer.
 
+### Step 1 — create `lab.pkt` from scratch
+
 > **You:** *"Build a CCNA lab with 2 ISR4331 routers connected by Gi0/0/0,
 > a 2960 switch on R1, two PCs on the switch (192.168.1.10 and .11), and
 > save as `lab.pkt`."*
@@ -55,6 +57,8 @@ you reload in Packet Tracer.
    → OK: saved C:\Users\you\Desktop\lab.pkt
 ```
 
+### Step 2 — extend the same `lab.pkt` (no need to start over)
+
 > **You:** *"Now add WPA2-PSK on an AccessPoint and configure 3 Smart
 > Things to register on a remote IoT server."*
 
@@ -64,7 +68,7 @@ you reload in Packet Tracer.
                     encryption="aes", password="Cisco123!", channel=6)
 ✻ pkt_add_device_by_model "Door" / "Light" / "Webcam"
 ✻ pkt_set_iot_registration each → REMOTE_SERVER 192.168.1.10 admin/iot
-✻ pkt_save("lab.pkt")
+✻ pkt_save("lab.pkt")   # overwrites the file from Step 1
 ```
 
 **Then** in Packet Tracer: `File → Open Recent → lab.pkt`. Done.
