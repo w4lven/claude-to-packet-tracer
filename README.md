@@ -38,9 +38,30 @@ Edits (running-configs, devices, links, …)
 .pkt file (ready to open in PT)
 ```
 
-Tested on **Packet Tracer 8.2.1.0118** (Windows) with Python 3.10+.
+Built and tested **exclusively on Packet Tracer 8.2.1.0118** (Windows) with
+Python 3.10+. See [Compatibility](#compatibility) below.
 
 ---
+
+## Compatibility
+
+> ⚠️ **This project has only been tested on Packet Tracer 8.2.1.0118 (build
+> 8.2.1) on Windows with Python 3.10+.**
+> 
+> Other versions are **not validated**:
+> 
+> - **PT 8.0 / 8.1**: should work — the `.pkt` Twofish-EAX encryption and
+>   the XML schema were stable across the 8.x line, but no testing has
+>   been done.
+> - **PT 7.x and earlier**: very likely incompatible — older PT used a
+>   plain XOR obfuscation (no Twofish), so the codec would need
+>   `decrypt_old` from [pka2xml](https://github.com/mircodz/pka2xml).
+> - **Future PT versions (8.3+, 9.x)**: untested. Cisco could change the
+>   encryption keys or the XML structure at any update.
+> 
+> If you try it on another version, please open an
+> [issue](https://github.com/w4lven/claude-to-packet-tracer/issues) with
+> what worked / what broke so we can extend support.
 
 ## Quickstart
 
