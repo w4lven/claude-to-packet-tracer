@@ -18,6 +18,92 @@ You hit **File → Open Recent** in Packet Tracer and see the result.
 
 ---
 
+## Demo
+
+A real session: you ask, Claude calls the MCP tools, the `.pkt` is rewritten,
+you reload in Packet Tracer.
+
+> **You:** *"Build a CCNA lab with 2 ISR4331 routers connected by Gi0/0/0,
+> a 2960 switch on R1, two PCs on the switch (192.168.1.10 and .11), and
+> save as `lab.pkt`."*
+
+```
+✻ Calling pkt_new_from_template("samples/biblio.pkt")
+   → OK: loaded as new working topology
+
+✻ Calling pkt_clear_topology()
+   → OK: removed 41 device(s) and 0 link(s)
+
+✻ Calling pkt_add_device_by_model("library/", "ISR4331", "R1", 200, 200)
+   → OK: added ISR4331 as 'R1' at (200,200)
+
+✻ Calling pkt_add_device_by_model("library/", "ISR4331", "R2", 500, 200)
+   → OK: added ISR4331 as 'R2' at (500,200)
+
+✻ Calling pkt_add_device_by_model("library/", "2960-24TT", "SW1", 200, 400)
+   → OK: added 2960-24TT as 'SW1'
+
+✻ Calling pkt_add_device_by_model("library/", "PC-PT", "PC1", 100, 550)
+✻ Calling pkt_add_device_by_model("library/", "PC-PT", "PC2", 300, 550)
+✻ Calling pkt_add_link("R1", "Gi0/0/0", "R2", "Gi0/0/0")
+✻ Calling pkt_add_link("R1", "Gi0/0/1", "SW1", "FastEthernet0/1")
+✻ Calling pkt_add_link("SW1", "FastEthernet0/2", "PC1", "FastEthernet0")
+✻ Calling pkt_add_link("SW1", "FastEthernet0/3", "PC2", "FastEthernet0")
+✻ Calling pkt_set_pc_network("PC1", ip="192.168.1.10", mask="255.255.255.0")
+✻ Calling pkt_set_pc_network("PC2", ip="192.168.1.11", mask="255.255.255.0")
+✻ Calling pkt_save("lab.pkt")
+   → OK: saved C:\Users\you\Desktop\lab.pkt
+```
+
+> **You:** *"Now add WPA2-PSK on an AccessPoint and configure 3 Smart
+> Things to register on a remote IoT server."*
+
+```
+✻ pkt_add_device_by_model "AccessPoint-PT" as AP1
+✻ pkt_set_ap_config(AP1, ssid="ClaudeLab", authentication="wpa2-psk",
+                    encryption="aes", password="Cisco123!", channel=6)
+✻ pkt_add_device_by_model "Door" / "Light" / "Webcam"
+✻ pkt_set_iot_registration each → REMOTE_SERVER 192.168.1.10 admin/iot
+✻ pkt_save("lab.pkt")
+```
+
+**Then** in Packet Tracer: `File → Open Recent → lab.pkt`. Done.
+
+![Topology generated end-to-end](docs/screenshots/demo-topology.png)
+*(screenshot above: generated topology rendered in Packet Tracer 8.2.1)*
+
+---
+
+## Architecture
+
+```
+┌──────────────────┐      stdio      ┌─────────────────────────┐
+│  Claude (Code,   │  ◀────JSON─────▶│  pt-mcp-server          │
+│   Desktop, API)  │     MCP/RPC     │  (FastMCP, Python)      │
+└──────────────────┘                 └────────┬────────────────┘
+                                              │ in-memory edits
+                                     ┌────────▼────────────┐
+                                     │  Topology (lxml)    │
+                                     │  + device library   │
+                                     └────────┬────────────┘
+                                              │ encode/decode
+                                     ┌────────▼────────────┐
+                                     │  pt_codec           │
+                                     │  Twofish-EAX +      │
+                                     │  XOR + zlib (pure   │
+                                     │  Python)            │
+                                     └────────┬────────────┘
+                                              │ bytes
+                                     ┌────────▼────────────┐
+                                     │  lab.pkt on disk    │
+                                     └─────────────────────┘
+                                              │
+                                              ▼
+                                     reload in Packet Tracer
+```
+
+---
+
 ## How it works
 
 `.pkt` and `.pka` files are XML compressed with zlib and encrypted with
