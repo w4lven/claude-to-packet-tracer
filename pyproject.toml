@@ -26,6 +26,9 @@ dependencies = [
     "mcp>=1.2",
     "lxml>=5.0",
     "pycryptoplus",
+    # pycryptoplus still imports pkg_resources, which was removed from the
+    # stdlib in Python 3.13 and now lives only in setuptools.
+    "setuptools",
 ]
 
 [project.urls]
