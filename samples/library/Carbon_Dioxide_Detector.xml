@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::260:70FF:FEED:5349</IPV6_LINK_LOCAL>
@@ -116,7 +116,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1499475763677</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>46813</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Carbon Dioxide Detector (JavaScript)</USER_APP>
@@ -165,7 +165,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:15933050224983577399</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:8647994638380801615</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -206,7 +206,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.103</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.107</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -227,7 +227,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.103</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.107</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -250,10 +250,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:32 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:00 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>33</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>5</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -263,7 +263,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -280,7 +283,110 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>from time import *
+from physical import *
+from gpio import *
+from environment import Environment
+from ioeclient import IoEClient
+
+ALARM_LEVEL = 60
+ENVIRONMENT_NAME = "CO2"
+
+state = 0
+level = 0
+
+def setup():
+    global state
+    IoEClient.setup({
+        "type": "Carbon Dixoide Detector",
+        "states": [{
+            "name": "Alarm",
+            "type": "bool",
+            "controllable": False
+        },
+        {
+            "name": "Level",
+            "type": "number",
+            "controllable": False
+        }]
+    })
+
+    state = restoreProperty("state", 0)
+    setState(state)
+    sendReport()
+
+
+def restoreProperty (propertyName, defaultValue):
+    value = getDeviceProperty(getName(), propertyName)
+    if  not (value == "" or value == None) :
+        if  isinstance(defaultValue, (int, float)):
+            value = int(value)
+
+
+        setDeviceProperty(getName(), propertyName, value)
+        return value
+
+
+    return defaultValue
+
+
+def loop ():
+    detect()
+    delay(1000)
+
+
+def detect ():
+    value = Environment.get(ENVIRONMENT_NAME)
+    if value &gt;= 0 :
+        setLevel( Environment.get(ENVIRONMENT_NAME))
+
+
+
+def sendReport ():
+    report = str(state) +","+str(level)    # comma seperated states
+    IoEClient.reportStates(report)
+    setDeviceProperty(getName(), "state", state)
+    setDeviceProperty(getName(), "level", level)
+
+
+def setState (newState):
+    global state
+    if  newState is 0 :
+        digitalWrite(1, LOW)
+    else:
+        digitalWrite(1, HIGH)
+
+
+    state = newState
+
+    sendReport()
+
+
+def setLevel (newLevel):
+    global level
+    if level == newLevel:
+        return
+
+
+    level = newLevel
+    if  level &gt; ALARM_LEVEL:
+        setState(1)
+    else:
+        setState(0)
+
+
+    sendReport()
+
+
+if __name__ == "__main__":
+    setup()
+    while True:
+        loop()
+        sleep(1)
+
+</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -795,8 +901,8 @@ if __name__ == "__main__":
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824542614096</MEM_ADDR>
-      <DEV_ADDR>1824450184832</DEV_ADDR>
+      <MEM_ADDR>1824542610736</MEM_ADDR>
+      <DEV_ADDR>1824825217680</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{c1bf97db-2f52-4978-96ef-b85f7e55190d}</PHYSICAL>
      <PHYSICAL_CPUR>

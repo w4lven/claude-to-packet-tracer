@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::206:2AFF:FE1B:7E75</IPV6_LINK_LOCAL>
@@ -116,7 +116,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1499967772573</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>72536</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Portable Music Player (JavaScript)</USER_APP>
@@ -165,7 +165,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:9385892413574110508</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:4023888592560178911</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -175,10 +175,10 @@
      <DHCP_CLIENT>
       <PORT_DATA_MAP>
        <PORT_DATA_ENTRY>
-        <PORT>Bluetooth</PORT>
+        <PORT>Wireless0</PORT>
        </PORT_DATA_ENTRY>
        <PORT_DATA_ENTRY>
-        <PORT>Wireless0</PORT>
+        <PORT>Bluetooth</PORT>
        </PORT_DATA_ENTRY>
       </PORT_DATA_MAP>
      </DHCP_CLIENT>
@@ -206,7 +206,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.115</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.117</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -227,7 +227,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.115</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.117</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -250,10 +250,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:32 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:00 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>33</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>5</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -263,7 +263,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -280,7 +283,120 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>from gpio import *
+from time import *
+from ioeclient import *
+from physical import *
+from bluetooth import *
+import math
+
+state = 0
+dstMac = "FFFF.FFFF.FFFF"
+dstService = "{58c41a2f-5111-45b0-863c-0429591c81fd}"
+btService = BluetoothService()
+
+def main():
+	setup()
+	while True:
+		sleep(3600)
+		
+def setup():
+    IoEClient.setup({
+        "type": "Portable Music Player",
+        "states": [{
+            "name": "On",
+            "type": "bool",
+            "controllable": True
+        }]
+    })
+
+    IoEClient.onInputReceive(onInputReceiveDone)
+    add_event_detect(0, detect)
+    global state
+    state = restoreProperty("state", 0)
+    setState(state)
+
+    Bluetooth.init()
+    Bluetooth.setAcceptingPairRequest(True)
+    Bluetooth.setDiscoverable(True)
+
+    print(btService.start(dstService))
+
+def detect():
+    processData(customRead(0), False)
+    
+def onInputReceiveDone(analogInput):
+    processData(analogInput, True)
+
+def restoreProperty(propertyName, defaultValue):
+    value = getDeviceProperty(getName(), propertyName)
+    if  not (value is "" or value is None):
+        if  type(defaultValue) is int :
+            value = int(value)
+
+        setDeviceProperty(getName(), propertyName, value)
+        return value
+    return defaultValue
+
+def mouseEvent(pressed, x, y, firstPress):
+    if firstPress:
+    	if state == 1:
+    		setState(0)
+    	else:
+    		setState(1)
+
+def processData(data, bIsRemote):
+    if len(data) &lt;= 0 :
+        return
+    setState(int(data))
+
+def setState(newState):
+    global state
+    state = newState
+
+    if state is 0:
+        digitalWrite(1, LOW)
+
+        btService.send(dstMac, dstService, "")
+    else:
+        digitalWrite(1, HIGH)
+
+        if dstMac:
+            btService.send(dstMac, dstService, "/../Sounds/crickets.wav")
+
+    IoEClient.reportStates(state)
+    setDeviceProperty(getName(), "state", state)
+
+def onPairRequestDone(mac, deviceName):
+    print("accepting pair request: " + str(mac))
+    Bluetooth.acceptPairRequest(mac, deviceName)
+    
+Bluetooth.onPairRequest(onPairRequestDone)
+
+def onDevicePairDone(mac):
+    print("paired: " + str(mac))
+    
+Bluetooth.onDevicePair(onDevicePairDone)
+
+def onDeviceUnpairDone(mac):
+    print("unpaired: " + str(mac))
+    
+Bluetooth.onDeviceUnpair(onDeviceUnpairDone)
+
+def onDeviceConnectDone(mac):
+    print("connected: " + str(mac))
+    
+Bluetooth.onDeviceConnect(onDeviceConnectDone)
+
+def onDeviceDisconnectDone(mac):
+    print("disconnected: " + str(mac))
+    
+Bluetooth.onDeviceDisconnect(onDeviceDisconnectDone)
+
+if __name__ == "__main__":
+    main()</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -853,8 +969,8 @@ if __name__ == "__main__":
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824787146336</MEM_ADDR>
-      <DEV_ADDR>1824444355344</DEV_ADDR>
+      <MEM_ADDR>1824787151616</MEM_ADDR>
+      <DEV_ADDR>1824450184832</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{3522d34e-369d-48be-b808-c3c06769a8c6}</PHYSICAL>
      <PHYSICAL_CPUR>

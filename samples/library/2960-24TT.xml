@@ -554,7 +554,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:6410359540514270396</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:2950921572406317368</SAVE_REF_ID>
      <SYS_NAME>Switch</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -652,7 +652,10 @@
        <NAME/>
        <DATE_TIME>0</DATE_TIME>
        <PERMISSION>6</PERMISSION>
-       <FILE_CONTENT/>
+       <FILE_CONTENT class="CIosFileContent">
+        <DEVICE_TYPE>Switch</DEVICE_TYPE>
+        <SET_NAME>2960_15.0_SE4</SET_NAME>
+       </FILE_CONTENT>
        <FILES>
         <FILE class="CFileSystem">
          <FILE_NUMBER>0</FILE_NUMBER>
@@ -675,7 +678,7 @@
            </FILE_CONTENT>
           </FILE>
          </FILES>
-         <FILE_COUNTER>2</FILE_COUNTER>
+         <FILE_COUNTER>3</FILE_COUNTER>
          <CAPACITY>64016384</CAPACITY>
         </FILE>
        </FILES>
@@ -733,17 +736,17 @@
     </ENGINE>
     <WORKSPACE>
      <LOGICAL>
-      <X>165</X>
+      <X>164</X>
       <Y>405</Y>
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824435431136</MEM_ADDR>
-      <DEV_ADDR>1824444966344</DEV_ADDR>
+      <MEM_ADDR>1824879242976</MEM_ADDR>
+      <DEV_ADDR>1824825409800</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{dd4d055e-5bcd-49de-b828-2fa2fa3185f1}</PHYSICAL>
      <PHYSICAL_CPUR>
-      <X_PN>0.0485</X_PN>
+      <X_PN>0.04825</X_PN>
       <Y_PN>0.11125</Y_PN>
       <X>107</X>
       <Y>0</Y>

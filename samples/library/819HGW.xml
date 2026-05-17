@@ -298,7 +298,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:14600862328227241925</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:14054659904277084274</SAVE_REF_ID>
      <SYS_NAME>Router</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -409,7 +409,9 @@
        <NAME/>
        <DATE_TIME>0</DATE_TIME>
        <PERMISSION>6</PERMISSION>
-       <FILE_CONTENT/>
+       <FILE_CONTENT class="CIpsDatFileContent">
+        <ICMP_SIGNATURE/>
+       </FILE_CONTENT>
        <FILES>
         <FILE class="CFileSystem">
          <FILE_NUMBER>0</FILE_NUMBER>
@@ -616,7 +618,7 @@
            <IPV6_PORT_DHCP_ENABLED>false</IPV6_PORT_DHCP_ENABLED>
            <IPV6_ADDRESSES/>
            <IP_UNNUMBERED/>
-           <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
+           <DHCP_SERVER_IP>10.10.10.1</DHCP_SERVER_IP>
            <MANAGEMENT_INTERFACE>false</MANAGEMENT_INTERFACE>
           </PORT>
           <PORT>
@@ -762,7 +764,6 @@
         <LINE>!</LINE>
         <LINE>interface BVI1</LINE>
         <LINE> mac-address 0001.97e6.dc01</LINE>
-        <LINE> no ip address</LINE>
         <LINE> ip address dhcp client-id GigabitEthernet 0</LINE>
         <LINE>!</LINE>
         <LINE>!</LINE>
@@ -784,7 +785,10 @@
          <NAME/>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>EmbeddedCiscoAccessPoint</DEVICE_TYPE>
+          <SET_NAME>802_12.4</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFileSystem">
            <FILE_NUMBER>0</FILE_NUMBER>
@@ -923,8 +927,8 @@
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824435436416</MEM_ADDR>
-      <DEV_ADDR>1824468514032</DEV_ADDR>
+      <MEM_ADDR>1824435455616</MEM_ADDR>
+      <DEV_ADDR>1824548807008</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{dd47a0dc-3f9a-41c5-9577-06c70d172c2a}</PHYSICAL>
      <PHYSICAL_CPUR>

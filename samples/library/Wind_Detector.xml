@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::202:16FF:FEE6:18AB</IPV6_LINK_LOCAL>
@@ -116,7 +116,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1491353144641</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>89340</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Wind Detector (JavaScript)</USER_APP>
@@ -165,7 +165,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:3877888063732122498</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:6198456397786099259</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -206,7 +206,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.124</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.132</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -227,7 +227,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.124</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.132</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -250,10 +250,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:16 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:33 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>16</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>4</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -263,7 +263,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -280,7 +283,111 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>from options import Options
+from time import *
+import math
+from physical import *
+from gpio import *
+from environment import Environment
+from ioeclient import IoEClient
+
+
+ENVIRONMENT_NAME = "Wind Speed"        # var ENVIRONMENT_NAME
+state = 0        # var state
+tick = 0        # var tick
+
+# set up client to talk and listen to IoE registration server
+
+def setup ():
+    
+    IoEClient.setup({
+        "type": "Wind Detector",
+        "states": [{
+            "name": "Wind",
+            "type": "bool",
+            "controllable": False
+        }]
+    })
+    
+    IoEClient.onInputReceive ( lambda rinput: processData(input, True) )
+
+    setState(state)
+    sendReport()
+
+
+
+# continously checking if WIND exist and send report to registration server
+
+def loop ():
+    global tick 
+
+    if tick % 10 == 0: # is tick consistent across devices?
+        detect()
+        sendReport()
+    tick += 1
+    
+
+
+# get WIND variable defined in Environment
+
+def detect ():
+    value = Environment.get(ENVIRONMENT_NAME)        # var value
+
+    if value &gt;= 1:
+        setState(1)
+    else:
+        setState(0)
+
+
+# process data received from server
+# not being called since controllable set to False in client setup
+
+def processData (data, bIsRemote):
+    if len(data) &lt;= 0:
+        return
+    data = data.split(",")        # var data
+    setState(int(data[0]))
+
+
+# send wind state  to the server
+
+def sendReport ():
+    report = state # comma seperated states        # var report
+    IoEClient.reportStates(report)
+
+
+# set state and update component image to reflect the current state
+
+def setState (newState):
+    global state
+    if newState == 0:
+        digitalWrite(1, LOW)
+    else:
+        digitalWrite(1, HIGH)
+
+    state = newState
+
+    sendReport()
+
+
+# toggle wind state
+
+def toggleState ():
+    if state == 0:
+        setState(1)
+    else:
+        setState(0)
+
+
+if __name__ == "__main__":
+    setup()
+    while True:
+        loop()
+        sleep(0)
+
+</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>1</FILE_NUMBER>
@@ -797,8 +904,8 @@ if __name__ == "__main__":
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824838734736</MEM_ADDR>
-      <DEV_ADDR>1824444368272</DEV_ADDR>
+      <MEM_ADDR>1824838742416</MEM_ADDR>
+      <DEV_ADDR>1825305547424</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{527ecb53-041d-4380-b2fa-e0eabf09bf21}</PHYSICAL>
      <PHYSICAL_CPUR>

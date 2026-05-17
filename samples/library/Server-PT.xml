@@ -77,7 +77,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:12281887343829905620</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:2054183588671484785</SAVE_REF_ID>
      <SYS_NAME>PC</SYS_NAME>
      <GATEWAY/>
      <DNS_CLIENT>
@@ -260,7 +260,10 @@
        <NAME/>
        <DATE_TIME>0</DATE_TIME>
        <PERMISSION>6</PERMISSION>
-       <FILE_CONTENT/>
+       <FILE_CONTENT class="CIosFileContent">
+        <DEVICE_TYPE>Switch</DEVICE_TYPE>
+        <SET_NAME>pt_12.1_EA4</SET_NAME>
+       </FILE_CONTENT>
        <FILES>
         <FILE class="CFileSystem">
          <FILE_NUMBER>0</FILE_NUMBER>
@@ -1487,8 +1490,8 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824879234336</MEM_ADDR>
-      <DEV_ADDR>1824435399888</DEV_ADDR>
+      <MEM_ADDR>1824435434016</MEM_ADDR>
+      <DEV_ADDR>1824831774352</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{2700438c-7bae-40d1-8b10-eeb42956469b}</PHYSICAL>
      <PHYSICAL_CPUR>

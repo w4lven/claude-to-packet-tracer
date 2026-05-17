@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::201:64FF:FE55:D3DA</IPV6_LINK_LOCAL>
@@ -128,7 +128,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1500088687194</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>81275</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Thermostat (JavaScript)</USER_APP>
@@ -177,7 +177,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:3422905477940135284</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:10352973205989967087</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -218,7 +218,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.120</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.105</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -239,7 +239,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.120</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.105</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -262,10 +262,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:16 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:33 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>16</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>4</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -275,7 +275,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -292,7 +295,213 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>
+var autoCoolTemp = 20;
+var autoHeatTemp = 19;
+
+var METRIC;
+
+var HEATER_PIN = 1;
+var COOLER_PIN = 2;
+var state = 0;	// 0 off, 1 cooling, 2 heating, 3 auto
+var STATE_NAMES = ["OFF", "COOL", "HEAT", "AUTO"];
+var temperature = 0;
+var unit;
+
+
+function setup () {
+	IoEClient.setup({
+		type: "Thermostat",
+		states: [{
+			name: "Status",
+			type: "options",
+			options: {
+				"0": "Off",
+				"1": "Cooling",
+				"2": "Heating",
+				"3": "Auto"
+			},
+			controllable: true
+		}, {
+			name: "Temperature",
+			type: "number",
+			unit: "&amp;deg;C",
+			imperialUnit: "&amp;deg;F",
+			toImperialConversion: "x*1.8+32",
+			toMetricConversion: "(x-32)/1.8",
+			decimalDigits: 1
+		}, {
+			name: "Auto Cool Temperature",
+			type: "number",
+			unit: "&amp;deg;C",
+			imperialUnit: "&amp;deg;F",
+			toImperialConversion: "x*1.8+32",
+			toMetricConversion: "(x-32)/1.8",
+			decimalDigits: 1,
+			controllable: true,
+			minValue: 10,
+			maxValue: 100
+		}, {
+			name: "Auto Heat Temperature",
+			type: "number",
+			unit: "&amp;deg;C",
+			imperialUnit: "&amp;deg;F",
+			toImperialConversion: "x*1.8+32",
+			toMetricConversion: "(x-32)/1.8",
+			decimalDigits: 1,
+			controllable: true,
+			minValue: -100,
+			maxValue: 20
+		}]
+	});
+	
+	IoEClient.onInputReceive = function(input) {
+		processData(input, true);
+	};
+	
+	attachInterrupt(0, function() {
+		processData(customRead(0), false);
+	});
+	
+
+	temperature = Environment.get("Ambient Temperature");
+	
+	measurementSystemChangeEvent();
+	
+	state = restoreProperty("state", 0);
+	setState(state);
+	
+	autoCoolTemp = restoreProperty("auto cool temp", 20);
+	autoHeatTemp = restoreProperty("auto heat temp", 19);
+	
+
+	
+	
+	Environment.removeCumulativeContribution("Ambient Temperature");
+	
+	updateEnvironment();
+	sendReport();
+	processData(customRead(0), false);
+}
+
+function restoreProperty (propertyName, defaultValue) {
+	var value = getDeviceProperty(getName(), propertyName);
+	if ( !(value === "" || value == "undefined") ) {
+		if ( typeof(defaultValue) == "number" ) {
+			value = Number(value);
+        }
+		
+		setDeviceProperty(getName(), propertyName, value);
+		return value;
+	}
+	
+	return defaultValue;
+}
+
+
+function loop () {
+	
+	temperature = Environment.get("Ambient Temperature");
+	updateEnvironment();
+	measurementSystemChangeEvent();
+	sendReport();
+	delay(1000);
+}
+
+function measurementSystemChangeEvent () {
+	METRIC = isUsingMetric();
+	unit = METRIC ? "C" : "F";
+	setCustomText(27, 15, 200, 100,
+		STATE_NAMES[state] + "  " +
+		convertTemperature(temperature) + " " + unit);		
+}
+
+function mouseEvent (pressed, x, y, firstPress) {
+	// if mouse pressed, then flip it
+	if (firstPress) {
+		state++;
+		if (state &gt;= 4) {
+			state = 0;
+        }
+		
+		setState(state);
+	}
+}
+
+function processData (data, bIsRemote) {
+	if (data) {
+		data = data.split(",");
+		
+		setState(parseInt(data[0]));
+		autoCoolTemp = parseFloat(data[2]);
+		autoHeatTemp = parseFloat(data[3]);
+		if(autoHeatTemp &gt; autoCoolTemp) {
+			var t = autoCoolTemp
+			autoCoolTemp = autoHeatTemp
+			autoHeatTemp = t
+		}
+	}
+}
+
+function setState (newState) {
+	state = newState;
+
+	analogWrite(A1, state); // change graphic
+	setCustomText(27, 15, 200, 100,
+		STATE_NAMES[state] + "  " +
+		convertTemperature(temperature) + " " + unit);		
+
+	sendReport();
+
+}
+
+function sendReport () {
+	var report = state + "," + temperature + ","
+		+ autoCoolTemp + "," + autoHeatTemp;
+	customWrite(0, report);
+	IoEClient.reportStates(report);
+	setDeviceProperty(getName(), "state", state);
+	setDeviceProperty(getName(), "temperature", temperature);
+	setDeviceProperty(getName(), "auto cool temp", autoCoolTemp);
+	setDeviceProperty(getName(), "auto heat temp", autoHeatTemp);
+}
+
+function updateEnvironment ()
+{
+	var autoCoolTemp = getDeviceProperty(getName(), "auto cool temp");
+	var autoHeatTemp = getDeviceProperty(getName(), "auto heat temp");
+
+	digitalWrite(HEATER_PIN, LOW);
+	digitalWrite(COOLER_PIN, LOW);
+
+	if ( state === 0 ) {
+		digitalWrite(HEATER_PIN, LOW);
+		digitalWrite(COOLER_PIN, LOW);
+	}
+	else if ( state === 1 ) {
+		digitalWrite(COOLER_PIN, HIGH);
+	}
+	else if ( state == 2 ) {
+		digitalWrite(HEATER_PIN, HIGH);
+	}
+	else if ( state == 3 ) {
+        if( temperature &gt;= autoCoolTemp)
+            digitalWrite(COOLER_PIN, HIGH);
+        else if( temperature &lt;= autoHeatTemp )
+            digitalWrite(HEATER_PIN, HIGH);
+	}
+}
+
+function convertTemperature (value) {
+	if (METRIC) {
+		return value.toFixed(0);
+    } else {
+		return (value * 1.8 + 32).toFixed(0);
+    }
+}
+</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -1275,8 +1484,8 @@ function convertTemperature (value) {
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824838743856</MEM_ADDR>
-      <DEV_ADDR>1824444350496</DEV_ADDR>
+      <MEM_ADDR>1824838738576</MEM_ADDR>
+      <DEV_ADDR>1824363605456</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{42f23c9c-d2c7-4ea7-a0a8-12946d18d5a1}</PHYSICAL>
      <PHYSICAL_CPUR>

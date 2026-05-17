@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::210:11FF:FE3C:1016</IPV6_LINK_LOCAL>
@@ -120,7 +120,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1491340846969</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>76697</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Solar Panel (JavaScript)</USER_APP>
@@ -169,7 +169,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:2464686886782710770</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:4452085139973373037</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -179,10 +179,10 @@
      <DHCP_CLIENT>
       <PORT_DATA_MAP>
        <PORT_DATA_ENTRY>
-        <PORT>Wireless0</PORT>
+        <PORT>Bluetooth</PORT>
        </PORT_DATA_ENTRY>
        <PORT_DATA_ENTRY>
-        <PORT>Bluetooth</PORT>
+        <PORT>Wireless0</PORT>
        </PORT_DATA_ENTRY>
       </PORT_DATA_MAP>
      </DHCP_CLIENT>
@@ -210,7 +210,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.118</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.124</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -231,7 +231,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.118</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.124</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -254,10 +254,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:32 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:00 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>33</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>5</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -267,7 +267,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -284,7 +287,109 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>from options import Options
+from time import *
+import math
+from physical import *
+from gpio import *
+from environment import Environment
+from ioeclient import IoEClient
+#from pyjs import *
+
+
+#Solar Panel
+#Read the sunlight levels
+#Output electricity based on sunlight
+#Panel will be 160Watts per square meter
+
+#Features output to IoE Server:
+# number of kWh of energy produced since turning on
+# number of kWh per minute
+# current production
+ENVIRONMENT_NAME = "Sunlight"        # var ENVIRONMENT_NAME
+MULTIPLIER = 255. / 1023        # var MULTIPLIER
+MAX_POWER = 1000. #1000 Watts of power based on one meter solar panel at noon at the equator        # var MAX_POWER
+EFFICIENCY = 0.16 #About a 16 percent efficiency per solar panel        # var EFFICIENCY
+PANEL_POWER = MAX_POWER * EFFICIENCY        # var PANEL_POWER
+LOG_BASE = 1.0749111034571373359815489867558        # var LOG_BASE
+
+state = 1        # var state
+electricity = 0        # var electricity
+#tick = 0        # var tick
+
+
+def setup ():
+    
+    IoEClient.setup({
+        "type": "Solar",
+        "states": [{
+            "name": "Status",
+            "type": "number",
+            "unit": 'Wh',
+            "controllable": False
+        }]
+    })
+
+    IoEClient.onInputReceive ( lambda rinput: processData(rinput, True) )
+
+    sendReport()
+
+
+
+
+def loop ():
+    global electricity
+    ##    if  (tick++ % 10) is 0 )    # is tick consistent across devices?
+    ##    {
+    electricity = int(getElectricityProduction())
+    ##print(electricity)
+    displayElectricity()
+    sendReport()
+    outputElectricity()
+    delay(1000)
+    ##    
+
+
+
+def displayElectricity ():
+    setCustomText(70, 45, 1000, 1000, str(int(electricity)) + '\tW')
+
+
+
+def getElectricityProduction ():
+    return PANEL_POWER * Environment.get(ENVIRONMENT_NAME) / 100
+
+
+
+def sendReport ():
+    report = state # comma seperated states        # var report
+    IoEClient.reportStates(electricity)
+    setDeviceProperty(getName(), "level", electricity)
+
+
+
+def outputElectricity ():
+    el_log = math.floor(math.log(electricity) / math.log(LOG_BASE))        # var el_log
+    if el_log &lt; 0:
+        el_log = 0
+    elif el_log &gt; 255:
+        el_log = 255
+    ##    print(el_log)
+    analogWrite(0, el_log)
+
+
+
+
+
+if __name__ == "__main__":
+    setup()
+    while True:
+        loop()
+        sleep(0)
+
+</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -769,8 +874,8 @@ if __name__ == "__main__":
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824838733776</MEM_ADDR>
-      <DEV_ADDR>1824444347264</DEV_ADDR>
+      <MEM_ADDR>1824787148256</MEM_ADDR>
+      <DEV_ADDR>1824363584448</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{5fbe821e-4166-4d95-87c8-2e58cab9602f}</PHYSICAL>
      <PHYSICAL_CPUR>

@@ -399,6 +399,67 @@ def pkt_set_iot_registration(device_name: str, mode: str,
 
 
 @mcp.tool()
+def pkt_list_mcu_projects(device_name: str) -> str:
+    """List all programming projects on an MCU-PT or SBC-PT.
+
+    Returns one line per project: name, language, files.
+    """
+    t = _require()
+    try:
+        projects = t.list_mcu_projects(device_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    if not projects:
+        return "(no projects)"
+    return "\n".join(
+        f"{p['project_name']:30s}  lang={p['language']:12s}  files={p['files']}"
+        for p in projects
+    )
+
+
+@mcp.tool()
+def pkt_get_mcu_script(device_name: str, project_name: str,
+                       file_name: str | None = None) -> str:
+    """Read the content of a script in an MCU/SBC project.
+
+    If `file_name` is omitted, returns the first file (usually main.js/main.py).
+    """
+    t = _require()
+    try:
+        return t.get_mcu_script(device_name, project_name, file_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+
+
+@mcp.tool()
+def pkt_set_mcu_script(device_name: str, project_name: str,
+                       content: str,
+                       language: str = "JavaScript",
+                       file_name: str | None = None) -> str:
+    """Create or update a script in an MCU/SBC project.
+
+    - `language`: 'JavaScript' or 'Python' (used only when creating a project).
+    - `file_name`: defaults to 'main.js' (JS) or 'main.py' (Python).
+
+    If the project doesn't exist, it is created. If the file doesn't exist
+    in the project, it is created.
+
+    Example:
+        pkt_set_mcu_script("MCU0", "Blink", '''
+            function setup() { pinMode(1, OUTPUT); }
+            function loop() { digitalWrite(1, HIGH); delay(500); digitalWrite(1, LOW); delay(500); }
+        ''', language="JavaScript")
+    """
+    t = _require()
+    try:
+        t.set_mcu_script(device_name, project_name, content,
+                         language=language, file_name=file_name)
+    except (KeyError, ValueError) as e:
+        return f"ERROR: {e}"
+    return f"OK: wrote script to {device_name!r} / {project_name!r}"
+
+
+@mcp.tool()
 def pkt_save(path: str | None = None) -> str:
     """Save the current topology back to a .pkt file.
 

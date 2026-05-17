@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-05-17
+
+### Added
+
+- MCU-PT / SBC-PT script management:
+  - `pkt_list_mcu_projects(device)` — list all programming projects.
+  - `pkt_get_mcu_script(device, project, file?)` — read a script.
+  - `pkt_set_mcu_script(device, project, content, language?, file?)` —
+    create or update a script (upsert). Auto-creates the project if it
+    doesn't exist; auto-creates the file (defaults to `main.js` /
+    `main.py` based on language).
+- Library now includes MCU-PT and SBC-PT blueprints.
+
 ## [0.3.0] - 2026-05-17
 
 ### Added

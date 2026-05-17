@@ -42,7 +42,7 @@
          <PC_FIREWALL>false</PC_FIREWALL>
          <PC_IPV6_FIREWALL>false</PC_IPV6_FIREWALL>
          <IPV6_ENABLED>false</IPV6_ENABLED>
-         <IPV6_ADDRESS_AUTOCONFIG>false</IPV6_ADDRESS_AUTOCONFIG>
+         <IPV6_ADDRESS_AUTOCONFIG>true</IPV6_ADDRESS_AUTOCONFIG>
          <IPV6_PORT_GATEWAY/>
          <IPV6_PORT_DNS/>
          <IPV6_LINK_LOCAL>FE80::2E0:B0FF:FE89:E192</IPV6_LINK_LOCAL>
@@ -120,7 +120,7 @@
      <USB_PORT_COUNT>0</USB_PORT_COUNT>
      <TEMPLATE_CREATION_TIME>1497662521091</TEMPLATE_CREATION_TIME>
      <STARTTIME>730940400000</STARTTIME>
-     <STARTSIMTIME>51828</STARTSIMTIME>
+     <STARTSIMTIME>0</STARTSIMTIME>
      <USER_APPS>
       <RUNNING_APPS>
        <USER_APP>Furnace (JavaScript)</USER_APP>
@@ -169,7 +169,7 @@
        <DHCP_SERVER_IP>0.0.0.0</DHCP_SERVER_IP>
       </PORT>
      </BLUETOOTH_PORT>
-     <SAVE_REF_ID>save-ref-id:17550690385891448273</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:4782649709414319902</SAVE_REF_ID>
      <SYS_NAME/>
      <GATEWAY>192.168.25.1</GATEWAY>
      <DNS_CLIENT>
@@ -210,7 +210,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.106</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.140</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -231,7 +231,7 @@
         <WPA_EAP_PASSWORD/>
         <DHCP_ENABLED>1</DHCP_ENABLED>
         <DHCPV6_ENABLED>1</DHCPV6_ENABLED>
-        <IP_ADDRESS>192.168.25.106</IP_ADDRESS>
+        <IP_ADDRESS>192.168.25.140</IP_ADDRESS>
         <SUBNET_MASK>255.255.255.0</SUBNET_MASK>
         <DEFAULT_GATEWAY/>
         <DNS/>
@@ -254,10 +254,10 @@
           <RAPID_COMMIT>0</RAPID_COMMIT>
           <HINT>0</HINT>
           <PREFIX_NAME/>
-          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:32 1993</INITIAL_SOLICIT_TIME>
+          <INITIAL_SOLICIT_TIME>lun. mars 1 00:00:00 1993</INITIAL_SOLICIT_TIME>
           <LAST_SOLICIT_TIME/>
-          <PRERX_SOLICIT_TIME>33</PRERX_SOLICIT_TIME>
-          <SOLICIT_MSG_COUNT>5</SOLICIT_MSG_COUNT>
+          <PRERX_SOLICIT_TIME>1</PRERX_SOLICIT_TIME>
+          <SOLICIT_MSG_COUNT>0</SOLICIT_MSG_COUNT>
           <INITIAL_REQUEST_TIME/>
           <LAST_REQUEST_TIME/>
           <REQUEST_MSG_COUNT>0</REQUEST_MSG_COUNT>
@@ -267,7 +267,10 @@
       </ENABLED_PORTS>
      </DHCPV6_MAIN>
      <NDV6>
-      <ENABLED_HOST/>
+      <ENABLED_HOST>
+       <PORT>Wireless0</PORT>
+       <ENABLED>0</ENABLED>
+      </ENABLED_HOST>
       <ENABLED_ROUTER>0</ENABLED_ROUTER>
       <SERVER_ROUTER_PORT_DATA_HEAD/>
      </NDV6>
@@ -284,7 +287,104 @@
          <NAME>Dev:</NAME>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CTextFileContent">
+          <TEXT>from gpio import *
+from time import *
+from ioeclient import *
+from environment import *
+from physical import *
+
+HUMIDITY_RATE = -2./3600; # -2% per hour
+TEMPERATURE_RATE = 10./3600; # 10C per hour
+VOLUME_AT_RATE = 100000.
+
+myinput = 0
+state = 0
+def setup():
+    global state
+    IoEClient.setup({
+        "type": "Furnace",
+        "states": [{
+            "name": "On",
+            "type": "bool",
+            "controllable": True
+        }]
+    })
+
+    IoEClient.onInputReceive(onInputReceiveDone)
+
+    add_event_detect(0, detect)
+
+    state = restoreProperty("state", 0)
+    setState(state)
+    detect()
+    
+    VAR = getDeviceProperty(getName(), "VOLUME_AT_RATE")
+    if not VAR:
+    	setDeviceProperty(getName(), "VOLUME_AT_RATE", VOLUME_AT_RATE)
+
+def detect():
+    processData(digitalRead(0)/1023)
+    
+    
+def onInputReceiveDone(data):
+    if  len(data) &lt;= 0 :
+        return
+    data = data.split(",")
+    processData(int(data[0]))
+        
+def restoreProperty(propertyName, defaultValue):
+    value = getDeviceProperty(getName(), propertyName)
+    if  not (value is "" or value is None):
+        if  type(defaultValue) is int :
+            value = int(value)
+
+        setDeviceProperty(getName(), propertyName, value)
+        return value
+    return defaultValue
+
+
+def setState(newState):
+    global state
+    state = newState
+    setDeviceProperty(getName(), "state", state)
+
+
+
+def processData(data):
+    global state, myinput
+    state = data
+    myinput = data
+    if  myinput &gt; 0 :
+        digitalWrite(5, HIGH)
+    else:
+        digitalWrite(5, LOW)
+    IoEClient.reportStates(myinput)
+    setDeviceProperty(getName(), "state", state)
+
+
+def main():
+    setup()
+    while True:
+        updateEnvironment()
+        delay(1000)
+
+
+
+def updateEnvironment():
+    VAR = float(getDeviceProperty(getName(), "VOLUME_AT_RATE"))
+    if VAR &lt; 0:
+    	VAR = 0
+    	
+    humidity_rate = float(myinput*HUMIDITY_RATE*VAR) / Environment.getVolume()
+    temperature_rate = float(myinput*TEMPERATURE_RATE*VAR) / Environment.getVolume()
+    Environment.setContribution("Humidity", humidity_rate, 0, True)
+    Environment.setContribution("Ambient Temperature", temperature_rate, 1000, True)
+    #print temperature_rate, VAR
+
+if __name__ == "__main__":
+	main()</TEXT>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CDirectory">
            <FILE_NUMBER>3</FILE_NUMBER>
@@ -793,8 +893,8 @@ if __name__ == "__main__":
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824787142496</MEM_ADDR>
-      <DEV_ADDR>1824450197760</DEV_ADDR>
+      <MEM_ADDR>1824542605456</MEM_ADDR>
+      <DEV_ADDR>1824825214448</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{355e04a4-5c48-428c-a804-28718aad3ed6}</PHYSICAL>
      <PHYSICAL_CPUR>

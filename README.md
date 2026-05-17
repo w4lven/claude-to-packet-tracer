@@ -94,6 +94,9 @@ Claude will call `pkt_open`, `pkt_list_devices`, `pkt_get_config`.
 | `pkt_set_ap_config(device, ssid, authentication, encryption, password, channel)` | Set AP wireless config (v0.3) |
 | `pkt_get_iot_registration(device)` | Get IoT registration mode/server of a Smart Thing (v0.3) |
 | `pkt_set_iot_registration(device, mode, server, username, password)` | Set IoT registration (v0.3) |
+| `pkt_list_mcu_projects(device)` | List MCU/SBC programming projects (v0.4) |
+| `pkt_get_mcu_script(device, project, file?)` | Read an MCU script (v0.4) |
+| `pkt_set_mcu_script(device, project, content, language, file?)` | Create/update an MCU script (v0.4) |
 | `pkt_append_config(device, lines)` | Append lines to the running-config |
 | `pkt_rename_device(old, new)` | Rename (NAME + SYS_NAME + hostname) |
 | `pkt_add_device(template, source, new, x, y)` | Clone a device from any template `.pkt` |
@@ -193,9 +196,11 @@ claude-to-packet-tracer/
   channel via `pkt_get_ap_config` / `pkt_set_ap_config` (since v0.3).
 - ✅ IoT Smart Things: registration mode + server / credentials via
   `pkt_get_iot_registration` / `pkt_set_iot_registration` (since v0.3).
+- ✅ MCU-PT / SBC-PT programming scripts (JavaScript / Python) via
+  `pkt_list_mcu_projects`, `pkt_get_mcu_script`, `pkt_set_mcu_script`
+  (since v0.4).
 - ❌ Wireless LAN Controller (WLC) management UI: not yet exposed
   (most config lives in PT's WLC web GUI). PR welcome.
-- ❌ MCU-PT / SBC-PT programming scripts: not yet exposed.
 
 ---
 

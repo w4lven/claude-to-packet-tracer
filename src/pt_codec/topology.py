@@ -713,6 +713,189 @@ class Topology:
 
         return self.get_iot_registration(device_name)
 
+    # ----------------------------------------------- MCU-PT / SBC-PT scripts
+    # PT stores programmable-board projects under:
+    #   <ENGINE>/<FILE_MANAGER>/<FILE class="CDirectory">/<FILES>/
+    #     <FILE class="CFileSystem"><NAME>Dev:</NAME>/<FILES>/
+    #       <FILE class="CDirectory"><NAME>ProjectName (JavaScript|Python)</NAME>/<FILES>/
+    #         <FILE class="CFile"><NAME>main.js|main.py</NAME>
+    #           <FILE_CONTENT class="CTextFileContent"><TEXT>...code...</TEXT>
+    @staticmethod
+    def _file_manager(device_el):
+        engine = device_el.find("ENGINE")
+        if engine is None:
+            return None
+        return engine.find("FILE_MANAGER")
+
+    @classmethod
+    def _dev_filesystem(cls, device_el):
+        """Return the <FILE class="CFileSystem"> for Dev:, or None."""
+        fm = cls._file_manager(device_el)
+        if fm is None:
+            return None
+        for fs in fm.iter("FILE"):
+            if fs.get("class") == "CFileSystem" and (fs.findtext("NAME") or "").strip() == "Dev:":
+                return fs
+        return None
+
+    @staticmethod
+    def _project_directories(fs_el):
+        """Yield <FILE class=CDirectory> children of the filesystem."""
+        files_root = fs_el.find("FILES")
+        if files_root is None:
+            return
+        for f in files_root.findall("FILE"):
+            if f.get("class") == "CDirectory":
+                yield f
+
+    @staticmethod
+    def _next_file_number(fs_el) -> int:
+        """Compute FILE_NUMBER for a new file: max(existing) + 1, bumping the counter."""
+        max_n = 0
+        for f in fs_el.iter("FILE"):
+            n = f.findtext("FILE_NUMBER")
+            if n and n.isdigit():
+                max_n = max(max_n, int(n))
+        counter_el = fs_el.find("FILE_COUNTER")
+        if counter_el is not None and (counter_el.text or "").strip().isdigit():
+            max_n = max(max_n, int(counter_el.text))
+        new_n = max_n + 1
+        if counter_el is not None:
+            counter_el.text = str(new_n)
+        return new_n
+
+    def list_mcu_projects(self, device_name: str) -> list[dict[str, str]]:
+        """List all programming projects on an MCU/SBC.
+
+        Each entry: {project_name, language, files: [filename, ...]}.
+        """
+        d = self._find_device(device_name)
+        fs = self._dev_filesystem(d)
+        if fs is None:
+            raise ValueError(f"{device_name!r} has no Dev: filesystem (not a programmable board?)")
+        out: list[dict] = []
+        for proj in self._project_directories(fs):
+            name = (proj.findtext("NAME") or "").strip()
+            # Language is in the project name, e.g. "Blink (JavaScript)"
+            lang = "unknown"
+            if "(" in name and ")" in name:
+                lang = name.rsplit("(", 1)[1].rstrip(")").strip()
+            files_el = proj.find("FILES")
+            files = []
+            if files_el is not None:
+                for fil in files_el.findall("FILE"):
+                    if fil.get("class") == "CFile":
+                        files.append((fil.findtext("NAME") or "").strip())
+            out.append({"project_name": name, "language": lang, "files": files})
+        return out
+
+    def get_mcu_script(self, device_name: str, project_name: str,
+                       file_name: str | None = None) -> str:
+        """Read the content of a script file in a project.
+
+        If file_name is None, returns the first file found (usually main.js/main.py).
+        """
+        d = self._find_device(device_name)
+        fs = self._dev_filesystem(d)
+        if fs is None:
+            raise ValueError(f"{device_name!r} has no Dev: filesystem")
+        for proj in self._project_directories(fs):
+            n = (proj.findtext("NAME") or "").strip()
+            base = n.rsplit("(", 1)[0].strip() if "(" in n else n
+            if n != project_name and base != project_name:
+                continue
+            files_el = proj.find("FILES")
+            if files_el is None:
+                raise ValueError(f"project {project_name!r} has no files")
+            for fil in files_el.findall("FILE"):
+                if fil.get("class") != "CFile":
+                    continue
+                fname = (fil.findtext("NAME") or "").strip()
+                if file_name is None or fname == file_name:
+                    content_el = fil.find("FILE_CONTENT")
+                    if content_el is None:
+                        return ""
+                    return content_el.findtext("TEXT") or ""
+            raise KeyError(f"file {file_name!r} not found in {project_name!r}")
+        raise KeyError(f"project {project_name!r} not found")
+
+    def set_mcu_script(self, device_name: str, project_name: str,
+                       content: str,
+                       language: str = "JavaScript",
+                       file_name: str | None = None) -> None:
+        """Create or update a script in a project (upsert).
+
+        - language: 'JavaScript' or 'Python' (used only when creating a project).
+        - file_name: defaults to 'main.js' for JavaScript, 'main.py' for Python.
+
+        If the project doesn't exist, it is created. If the file in the project
+        doesn't exist, it is created.
+        """
+        if file_name is None:
+            file_name = "main.py" if language.lower().startswith("python") else "main.js"
+
+        d = self._find_device(device_name)
+        fs = self._dev_filesystem(d)
+        if fs is None:
+            raise ValueError(f"{device_name!r} has no Dev: filesystem")
+
+        # Find or create the project directory.
+        # The project NAME convention is "Name (Language)".
+        # We match by full name OR by base name (without "(Lang)").
+        target_dir = None
+        for proj in self._project_directories(fs):
+            n = (proj.findtext("NAME") or "").strip()
+            base = n.rsplit("(", 1)[0].strip() if "(" in n else n
+            if n == project_name or base == project_name:
+                target_dir = proj
+                break
+
+        if target_dir is None:
+            # Create a new project directory
+            files_root = fs.find("FILES")
+            if files_root is None:
+                files_root = etree.SubElement(fs, "FILES")
+            target_dir = etree.SubElement(files_root, "FILE", attrib={"class": "CDirectory"})
+            etree.SubElement(target_dir, "FILE_NUMBER").text = str(self._next_file_number(fs))
+            full_name = (f"{project_name} ({language})" if "(" not in project_name
+                         else project_name)
+            etree.SubElement(target_dir, "NAME").text = full_name
+            etree.SubElement(target_dir, "DATE_TIME").text = "0"
+            etree.SubElement(target_dir, "PERMISSION").text = "6"
+            etree.SubElement(target_dir, "FILE_CONTENT")
+            etree.SubElement(target_dir, "FILES")
+
+        # Find or create the file inside the project
+        files_el = target_dir.find("FILES")
+        if files_el is None:
+            files_el = etree.SubElement(target_dir, "FILES")
+
+        target_file = None
+        for fil in files_el.findall("FILE"):
+            if fil.get("class") == "CFile" and (fil.findtext("NAME") or "").strip() == file_name:
+                target_file = fil
+                break
+
+        if target_file is None:
+            target_file = etree.SubElement(files_el, "FILE", attrib={"class": "CFile"})
+            etree.SubElement(target_file, "FILE_NUMBER").text = str(self._next_file_number(fs))
+            etree.SubElement(target_file, "NAME").text = file_name
+            etree.SubElement(target_file, "DATE_TIME").text = "0"
+            etree.SubElement(target_file, "PERMISSION").text = "6"
+            content_el = etree.SubElement(target_file, "FILE_CONTENT",
+                                          attrib={"class": "CTextFileContent"})
+            etree.SubElement(content_el, "TEXT").text = content
+        else:
+            # Update existing
+            content_el = target_file.find("FILE_CONTENT")
+            if content_el is None:
+                content_el = etree.SubElement(target_file, "FILE_CONTENT",
+                                              attrib={"class": "CTextFileContent"})
+            text_el = content_el.find("TEXT")
+            if text_el is None:
+                text_el = etree.SubElement(content_el, "TEXT")
+            text_el.text = content
+
     # -------------------------------------------------- remove device / link
     def remove_device(self, name: str) -> int:
         """Remove a device and all links referencing it. Returns count of removed links."""

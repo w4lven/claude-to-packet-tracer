@@ -342,7 +342,7 @@
       <RUNNING_APPS/>
       <DESKTOP_APPS/>
      </USER_APPS>
-     <SAVE_REF_ID>save-ref-id:924833487881224427</SAVE_REF_ID>
+     <SAVE_REF_ID>save-ref-id:17608362691289745964</SAVE_REF_ID>
      <SYS_NAME>IR800</SYS_NAME>
      <RUNNINGCONFIG>
       <LINE>!</LINE>
@@ -567,7 +567,9 @@
        <NAME/>
        <DATE_TIME>0</DATE_TIME>
        <PERMISSION>6</PERMISSION>
-       <FILE_CONTENT/>
+       <FILE_CONTENT class="CIpsDatFileContent">
+        <ICMP_SIGNATURE/>
+       </FILE_CONTENT>
        <FILES>
         <FILE class="CFileSystem">
          <FILE_NUMBER>0</FILE_NUMBER>
@@ -1164,7 +1166,7 @@
         <ENABLED_ROUTER>1</ENABLED_ROUTER>
         <SERVER_ROUTER_PORT_DATA_HEAD>
          <PORT_DATA_PAIR>
-          <PORT_NAME>Ethernet0</PORT_NAME>
+          <PORT_NAME>Ethernet1</PORT_NAME>
           <SERVER_ROUTER_PORT_DATA>
            <ADV_SEND_ADVERTISEMENT>1</ADV_SEND_ADVERTISEMENT>
            <MAX_RTR_ADV_INTERVAL>600</MAX_RTR_ADV_INTERVAL>
@@ -1180,7 +1182,7 @@
           </SERVER_ROUTER_PORT_DATA>
          </PORT_DATA_PAIR>
          <PORT_DATA_PAIR>
-          <PORT_NAME>Ethernet1</PORT_NAME>
+          <PORT_NAME>Ethernet0</PORT_NAME>
           <SERVER_ROUTER_PORT_DATA>
            <ADV_SEND_ADVERTISEMENT>1</ADV_SEND_ADVERTISEMENT>
            <MAX_RTR_ADV_INTERVAL>600</MAX_RTR_ADV_INTERVAL>
@@ -1676,18 +1678,18 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
        <DHCP_SERVERS>
         <ASSOCIATED_PORTS>
          <ASSOCIATED_PORT>
-          <NAME>Ethernet0</NAME>
+          <NAME>Ethernet1</NAME>
           <DHCP_SERVER>
            <ENABLED>0</ENABLED>
            <POOLS>
             <POOL>
              <NAME>serverPool</NAME>
-             <NETWORK>0.0.0.0</NETWORK>
-             <MASK>0.0.0.0</MASK>
+             <NETWORK>169.254.0.0</NETWORK>
+             <MASK>255.255.0.0</MASK>
              <DEFAULT_ROUTER>0.0.0.0</DEFAULT_ROUTER>
              <TFTP_ADDRESS>0.0.0.0</TFTP_ADDRESS>
-             <START_IP>0.0.0.0</START_IP>
-             <END_IP>0.0.2.0</END_IP>
+             <START_IP>169.254.0.0</START_IP>
+             <END_IP>169.254.1.255</END_IP>
              <DNS_SERVER>0.0.0.0</DNS_SERVER>
              <MAX_USERS>512</MAX_USERS>
              <DOMAIN_NAME/>
@@ -1701,18 +1703,18 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
           </DHCP_SERVER>
          </ASSOCIATED_PORT>
          <ASSOCIATED_PORT>
-          <NAME>Ethernet1</NAME>
+          <NAME>Ethernet0</NAME>
           <DHCP_SERVER>
            <ENABLED>0</ENABLED>
            <POOLS>
             <POOL>
              <NAME>serverPool</NAME>
-             <NETWORK>169.254.0.0</NETWORK>
-             <MASK>255.255.0.0</MASK>
+             <NETWORK>0.0.0.0</NETWORK>
+             <MASK>0.0.0.0</MASK>
              <DEFAULT_ROUTER>0.0.0.0</DEFAULT_ROUTER>
              <TFTP_ADDRESS>0.0.0.0</TFTP_ADDRESS>
-             <START_IP>169.254.0.0</START_IP>
-             <END_IP>169.254.1.255</END_IP>
+             <START_IP>0.0.0.0</START_IP>
+             <END_IP>0.0.2.0</END_IP>
              <DNS_SERVER>0.0.0.0</DNS_SERVER>
              <MAX_USERS>512</MAX_USERS>
              <DOMAIN_NAME/>
@@ -2000,7 +2002,10 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
          <NAME/>
          <DATE_TIME>0</DATE_TIME>
          <PERMISSION>6</PERMISSION>
-         <FILE_CONTENT/>
+         <FILE_CONTENT class="CIosFileContent">
+          <DEVICE_TYPE>EmbeddedCiscoAccessPoint</DEVICE_TYPE>
+          <SET_NAME>803_15.3</SET_NAME>
+         </FILE_CONTENT>
          <FILES>
           <FILE class="CFileSystem">
            <FILE_NUMBER>0</FILE_NUMBER>
@@ -2065,8 +2070,8 @@ Password: &lt;input type="password" name="pw" id="pw" value="" size="20"&gt;&lt;
       <DEVCLUSTERID>1-1</DEVCLUSTERID>
       <CUSTOM_IMAGE_LOGICAL/>
       <CUSTOM_IMAGE_PHYSICAL/>
-      <MEM_ADDR>1824435435456</MEM_ADDR>
-      <DEV_ADDR>1824543395104</DEV_ADDR>
+      <MEM_ADDR>1824435455136</MEM_ADDR>
+      <DEV_ADDR>1824459846736</DEV_ADDR>
      </LOGICAL>
      <PHYSICAL>{458ab072-7127-4a29-8846-c044a46cc1b3},{95b42ff1-bc38-482c-9c53-8d616979d8ae},{f1672e84-6400-422b-badb-b74b49e2b064},{a70fe803-5231-4c93-9472-bb5302b74f15},{d0bb355c-5963-411f-b856-f558611f694e},{f67a1a73-90d8-4c78-8b26-4f72bb1cf851}</PHYSICAL>
      <PHYSICAL_CPUR>
